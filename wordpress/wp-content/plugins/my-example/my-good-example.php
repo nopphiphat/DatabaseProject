@@ -4,10 +4,96 @@
  * Description: This is just an example plugin
  */
 
+add_action('wp_enqueue_scripts', 'hoa_setting_up_scripts');
+function hoa_setting_up_scripts() {
+    //wp_register_style( 'hoa_css', plugins_url('css/hoa_style.css',__FILE__) );
+    //wp_enqueue_style( 'hoa_css' );
+
+}
+ //add semantic ui to wb_header
+
+
+ function add_semantic_ui(){
+    ?>
+    <!--plugin css-->
+     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.css"/>
+     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/components/popup.css"/>
+     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/components/popup.min.css"/>
+     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/components/modal.css"/>
+
+     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+     <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.js"></script>
+     <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/components/popup.js"></script>
+     <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/components/popup.min.js"></script>
+     <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/components/modal.js"></script>
+     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+     <script type="text/javascript" src=<?php echo plugins_url('js/hoafunctions.js',__FILE__) ?>></script>
+          <style>
+    label, input { display:block; }
+    input.text { margin-bottom:12px; width:95%; padding: .4em; }
+    fieldset { padding:0; border:0; margin-top:25px; }
+    h1 { font-size: 1.2em; margin: .6em 0; }
+    div#users-contain { width: 350px; margin: 20px 0; }
+    div#users-contain table { margin: 1em 0; border-collapse: collapse; width: 100%; }
+    div#users-contain table td, div#users-contain table th { border: 1px solid #eee; padding: .6em 10px; text-align: left; }
+    .ui-dialog .ui-state-error { padding: .3em; }
+    .validateTips { border: 1px solid transparent; padding: 0.3em; }
+      </style>
+     
+    <?php
+ }
+
+ add_action('wp_footer','add_semantic_ui');
+
+
+ function add_hoa_content(){
+    ?>
+    
+    
+    <!--Test-->
+    <div class="ui middle aligned animated list" style="position:fixed;z-index:1000;top:40%;">
+      <div class="item">
+         <button class="ui active button" id="hoa_phone" style="width:130px"><i class="big phone icon"></i>Call </button>
+      </div>
+
+      <div class="item">
+         <button class="ui active button" style="width:130px"><i class="big envelope icon"></i> Mail </button>
+      </div>
+
+
+      <div class="item">
+         <button class="ui active button" style="width:130px"><i class="big chart area icon"></i> Chart </button>
+      </div>
+</div>
+
+
+<div id="hoa_page_1"class="ui modal">
+  <i class="close icon"></i>
+  <div class="header">
+     HOA Login
+  </div>
+  <div class="actions">
+    <div class="ui black deny button">
+      Cancel
+    </div>
+    <div class="ui positive right button">
+      Log In
+    </div>
+  </div>
+</div>
+    
+    <?php
+ }
+ add_action('wp','add_hoa_content');
+
+
+
+
  function my_good_example_function()
  {
     $information = "Hello Word";
-    return $information;
+
+
  }
  add_shortcode('example','my_good_example_function');
 
@@ -25,33 +111,6 @@
  //deaction
  //register_deactivation_hook($file,$function);
 
- add_action( 'plugins_loaded', 'boj_footer_message_plugin_setup' );
- function boj_footer_message_plugin_setup() {
- /* Add the footer message action. */
- add_action( 'wp_footer', 'boj_example_footer_message', 100 );
- }
- function boj_example_footer_message() {
-
- echo 'This site is built using < a href=”http://wordpress.org”
- title=”WordPress publishing platform” > WordPress < /a > .';
- }
-
-
- add_action( 'init', 'boj_add_excerpts_to_pages' );
-function boj_add_excerpts_to_pages() {
-add_post_type_support( 'page', array( 'excerpt' ) );
-}
-
-add_action( 'admin_menu', 'boj_admin_settings_page' );
-function boj_admin_settings_page() {
-add_options_page(
-'BOJ Settings',
-'BOJ Settings',
-'manage_options',
-'boj_admin_settings',
-'boj_admin_settings_page'
-);
-}
 
 ?>
 
