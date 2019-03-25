@@ -20,25 +20,18 @@ function hoa_setting_up_scripts() {
      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/components/popup.css"/>
      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/components/popup.min.css"/>
      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/components/modal.css"/>
+     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/components/modal.css"/>
 
      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
      <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.js"></script>
      <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/components/popup.js"></script>
      <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/components/popup.min.js"></script>
      <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/components/modal.js"></script>
+     <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/components/dropdown.js"></script>
      <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+     <script src="http://cdn.bootcss.com/blueimp-md5/1.1.0/js/md5.js"></script>
+     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
      <script type="text/javascript" src=<?php echo plugins_url('js/hoafunctions.js',__FILE__) ?>></script>
-          <style>
-    label, input { display:block; }
-    input.text { margin-bottom:12px; width:95%; padding: .4em; }
-    fieldset { padding:0; border:0; margin-top:25px; }
-    h1 { font-size: 1.2em; margin: .6em 0; }
-    div#users-contain { width: 350px; margin: 20px 0; }
-    div#users-contain table { margin: 1em 0; border-collapse: collapse; width: 100%; }
-    div#users-contain table td, div#users-contain table th { border: 1px solid #eee; padding: .6em 10px; text-align: left; }
-    .ui-dialog .ui-state-error { padding: .3em; }
-    .validateTips { border: 1px solid transparent; padding: 0.3em; }
-      </style>
      
     <?php
  }
@@ -49,35 +42,95 @@ function hoa_setting_up_scripts() {
  function add_hoa_content(){
     ?>
     
-    
+   <div id="hoa_plugin">
     <!--Test-->
     <div class="ui middle aligned animated list" style="position:fixed;z-index:1000;top:40%;">
       <div class="item">
-         <button class="ui active button" id="hoa_phone" style="width:130px"><i class="big phone icon"></i>Call </button>
+         <button class="ui active button" id="hoa_phone" style="width:130px" onclick=Hoa_phone_button()><i class="big phone icon"></i>Call </button>
       </div>
 
       <div class="item">
-         <button class="ui active button" style="width:130px"><i class="big envelope icon"></i> Mail </button>
+         <button class="ui active button" style="width:130px" onclick=Hoa_mail_button()><i class="big envelope icon"></i> Mail </button>
       </div>
 
 
       <div class="item">
-         <button class="ui active button" style="width:130px"><i class="big chart area icon"></i> Chart </button>
+         <button class="ui active button" style="width:130px" onclick=Hoa_chart_button()><i class="big chart area icon"></i> Chart </button>
       </div>
+     </div>
+   </div>
+   
+<!--the place will be inserted html-->   
+<div id="hoa_insert">
+   
 </div>
 
-
+<!--call page-->
 <div id="hoa_page_1"class="ui modal">
   <i class="close icon"></i>
   <div class="header">
+     HOA PhoneNumber  571-234-1532
+  </div>
+  <div class="content">
+      HOA will help you to manage your Home.
+
+  </div>
+  <div class="actions">
+    <div class="ui positive right button">
+      Confirm
+    </div>
+  </div>
+</div>
+
+
+<!--login page-->
+<div id="hoa_page_2"class="ui modal">
+  <i class="close icon"></i>
+  <div class="header">
      HOA Login
+  </div>
+  <div class="content">
+
+   <div class="ui labeled input" style="margin-left:30px;">
+      <div class="ui label">
+         UserName
+      </div>
+      <input id="hoa_username" type="text" placeholder="UserName" value="" style="width:250px">
+   </div>
+
+   <div class="ui labeled input" style="margin-left:50px">
+      <div class="ui label">
+         PassWord
+      </div>
+      <input id="hoa_password" type="text" placeholder="PassWord" value="" style="width:250px">
+   </div>
+
   </div>
   <div class="actions">
     <div class="ui black deny button">
       Cancel
     </div>
-    <div class="ui positive right button">
+    <div class="ui positive right button" onclick=Hoa_login_page_login()>
       Log In
+    </div>
+  </div>
+</div>
+
+
+
+<!--chart page-->
+<div id="hoa_page_3"class="ui modal">
+  <i class="close icon"></i>
+  <div class="header">
+     Chart
+  </div>
+  <div class="content">
+      HOA will help you to manage your Home.
+
+  </div>
+  <div class="actions">
+    <div class="ui positive right button">
+      Confirm
     </div>
   </div>
 </div>
