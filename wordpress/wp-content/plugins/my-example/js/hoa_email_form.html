@@ -4,18 +4,26 @@
           <label>Name</label>
           <div class="two fields">
             <div class="field">
-              <input type="text" name="hoa-first-name" placeholder="First Name">
+              <input id="hoa_c_first_name" type="text" name="hoa-first-name" placeholder="First Name">
             </div>
             <div class="field">
-              <input type="text" name="hoa-last-name" placeholder="Last Name">
+              <input id="hoa_c_last_name" type="text" name="hoa-last-name" placeholder="Last Name">
             </div>
           </div>
         </div>
-
-        <div class="field">
-          <label>From: Email Address</label>
-          <div class="twelve wide filed">
-            <input type="text" name="hoa-from-email" placeholder="Your Email">
+        
+        <div class="two fields">
+            <div class="field">
+              <label>Phone Number</label>
+              <div class="filed">
+                  <input id="hoa_c_phone_number" type="number" name="hoa-from-phone" placeholder="Your Phone Number">
+              </div>
+            </div>
+          <div class="field">
+            <label>Email Address</label>
+            <div class="filed">
+              <input id="hoa_c_email" type="text" name="hoa-from-email" placeholder="Your Email">
+            </div>
           </div>
         </div>
 
@@ -23,17 +31,17 @@
           <label>Address</label>
           <div class="fields">
             <div class="twelve wide field">
-              <input type="text" name="hoa-address" placeholder="Street Address">
+              <input id="hoa_c_address" type="text" name="hoa-address" placeholder="Street Address">
             </div>
             <div class="four wide field">
-              <input type="text" name="hoa-address-2" placeholder="Apt #">
+              <input id="hoa_c_apt" type="text" name="hoa-address-2" placeholder="Apt #">
             </div>
           </div>
         </div>
         <div class="two fields">
           <div class="field">
             <label>State</label>
-            <select class="ui fluid dropdown">
+            <select id="hoa_c_state" class="ui fluid dropdown">
               <option value="">State</option>
           <option value="AL">Alabama</option>
           <option value="AK">Alaska</option>
@@ -91,25 +99,25 @@
           
           <div class="field">
               <label>Country</label>
-              <input type="text" name="Country" placeholder="US">
+              <input id="hoa_c_country" type="text" name="Country" placeholder="US">
             </div>
         </div>
 
         <div class="field">
-            <label>Category</label>
-            <select class="ui fluid dropdown">
-              <option value="">Service Category</option>
-              <option value="AL">Clean Roof</option>
-              <option value="AK">Repair</option>
-              <option value="AZ">Clean House</option>
+            <label>Community</label>
+            <select id="hoa_c_community" class="ui fluid dropdown">
+              <option value="">Community_1</option>
+              <option value="AL">Community_2</option>
+              <option value="AK">Community_3</option>
+              <option value="AZ">Community_4</option>
               <option value="AR">Other</option>
             </select>
         </div>
 
             <div class="field">
               <label>Email Content</label>
-              <textarea></textarea>
+              <textarea id="hoa_c_email_content"></textarea>
             </div>
 
-        <div class="ui button" tabindex="0">Submit</div>
+        <div id="hoa_send_email" class="ui button" tabindex="0" onclick=HOA_Send_Mail()>Send</div>
       </form>

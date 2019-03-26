@@ -1,6 +1,6 @@
 <?php
 /**
- * plugin Name: My-GOOD-EXAMPLE
+ * plugin Name: HOA
  * Description: This is just an example plugin
  */
 

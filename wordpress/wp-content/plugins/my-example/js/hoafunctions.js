@@ -147,3 +147,33 @@ function login_faile(){
 
 //MD5js
 //hex_md5("")
+
+//
+var hoa_form = {
+  hoa_c_first_name:"",
+  hoa_c_last_name:"",
+  hoa_c_phone:0,
+  hoa_c_email:"",
+  hoa_c_address:"",
+  hoa_c_state:"",
+  hoa_c_country:"",
+  hoa_c_community:"",
+  hoa_c_email_content:"",
+}
+
+//send email button event
+function HOA_Send_Mail(){
+  hoa_form.hoa_c_first_name=$('#hoa_c_first_name').val();
+  hoa_form.hoa_c_last_name=$('#hoa_c_last_name').val();
+  hoa_form.hoa_c_phone=$('#hoa_c_phone_number').val();
+  hoa_form.hoa_c_email=$('#hoa_c_email').val();
+  hoa_form.hoa_c_address=$('#hoa_c_address').val()+" "+$('#hoa_c_apt').val();
+  hoa_form.hoa_c_state=$('#hoa_c_state').val();
+  hoa_form.hoa_c_country=$('#hoa_c_country').val();
+  hoa_form.hoa_c_community=$('#hoa_c_community').val();
+  hoa_form.hoa_c_email_content=$('#hoa_c_email_content').val();
+
+  alert("Email has been sent.");
+  console.log(hoa_form);
+  axios.post(constants.website+'hoa_c_send_email',hoa_form);
+}
