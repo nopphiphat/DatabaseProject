@@ -66,7 +66,7 @@ function hoa_setting_up_scripts() {
 </div>
 
 <!--call page-->
-<div id="hoa_page_1"class="ui modal">
+<div id="hoa_page_1"class="ui longe modal">
   <i class="close icon"></i>
   <div class="header">
      HOA PhoneNumber  571-234-1532
@@ -84,7 +84,7 @@ function hoa_setting_up_scripts() {
 
 
 <!--login page-->
-<div id="hoa_page_2"class="ui modal">
+<div id="hoa_page_2"class="ui longe modal">
   <i class="close icon"></i>
   <div class="header">
      HOA Login
@@ -119,7 +119,7 @@ function hoa_setting_up_scripts() {
 
 
 <!--chart page-->
-<div id="hoa_page_3"class="ui modal">
+<div id="hoa_page_3"class="ui long modal">
   <i class="close icon"></i>
   <div class="header">
      Chart

@@ -1,10 +1,11 @@
 
 var constants = {
-  website:"",
+  website:"https://localhost:8443/",
   mainsite:"",
-  login_status:true,
+  login_status:false,
   username:'',
   password:'',
+  email_form:false,
 };
 
 
@@ -42,15 +43,15 @@ function Hoa_login_page_login(){
   console.log(constants.password);
 
   //send username and password to back-end
-  axios.get('/hoa_login',{
+  axios.get(constants.website+'hoa_login',{
     params:{
       username:constants.username,
       password:constants.password,
     }
   }
-  ).then(function(response){
-    constants.login_status = response.data.login_status;
-  })
+  )//.then(function(response){
+    //constants.login_status = response.data.login_status;
+  //})
 
   if(constants.login_status){
       user_login_email();
@@ -61,6 +62,13 @@ function Hoa_login_page_login(){
 }
 
 function user_login_email(){
+  if(constants.email_form){
+    $('#hoa_email_form')
+    .modal('show');
+    $('.menu .item')
+    .tab();
+  }
+  else{
   var html_str = '\
   <div id="hoa_email_form" class="ui longer modal">\
     <i class="close icon"></i>\
@@ -73,12 +81,9 @@ function user_login_email(){
       <a class="item" data-tab="Report_1">Report_1</a>\
       <a class="item active" data-tab="Report_2">Report_2</a>\
     </div>\
-    <div class="ui bottom attached tab segment" data-tab="Request">\
-      <select class="ui dropdown">\
-        <option value="">Gender</option>\
-        <option value="0">Repair</option>\
-        <option value="1">Other</option>\
-      </select>\
+    <div id="tab_one_form" class="ui bottom attached tab segment" data-tab="Request">\
+      <!--Form-->\
+      \
     </div>\
     <div class="ui bottom attached tab segment" data-tab="Report_1">\
       Second\
@@ -95,10 +100,25 @@ function user_login_email(){
   </div>';
   var insertDiv = document.getElementById("hoa_insert");
   insertDiv.innerHTML = html_str;
+  
+  $(function(){
+    $.ajax({
+      type:"POST",
+      url:"wp-content/plugins/my-example/js/hoa_email_form.html",
+      cache:false,
+      success:function(html){
+        var email_formDiv =document.getElementById("tab_one_form");
+        email_formDiv.innerHTML = html;
+      }
+    });
+  });
+
   $('#hoa_email_form')
   .modal('show');
   $('.menu .item')
   .tab();
+  constants.email_form = true;
+  }
   
 }
 
