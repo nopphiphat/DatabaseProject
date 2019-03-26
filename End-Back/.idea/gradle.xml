@@ -4,12 +4,12 @@
     <option name="linkedExternalProjectsSettings">
       <GradleProjectSettings>
         <option name="distributionType" value="LOCAL" />
-        <option name="externalProjectPath" value="$PROJECT_DIR$/../../../End-Back/End-Back/ProjectWeb" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
         <option name="gradleHome" value="/opt/gradle/gradle-5.0" />
         <option name="gradleJvm" value="11" />
         <option name="modules">
           <set>
-            <option value="$PROJECT_DIR$/../../../End-Back/End-Back/ProjectWeb" />
+            <option value="$PROJECT_DIR$" />
           </set>
         </option>
         <option name="useQualifiedModuleNames" value="true" />
