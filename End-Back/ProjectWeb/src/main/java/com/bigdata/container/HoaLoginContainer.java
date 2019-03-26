@@ -23,7 +23,6 @@ public class HoaLoginContainer {
     @PostMapping(value = "/hoa_c_send_email")
     public @ResponseBody void getCustomer(@RequestBody CustomerEmailForm emailForm){
         System.out.println(emailForm.getHoa_c_address());
-
-r
+        
     }
 }
