@@ -2,7 +2,7 @@
 var constants = {
   website:"https://localhost:8443/",
   mainsite:"",
-  login_status:false,
+  login_status:true,
   username:'',
   password:'',
   email_form:false,
@@ -17,13 +17,7 @@ function Hoa_phone_button(){
 
 
 function Hoa_mail_button(){
-  if(constants.login_status){
     user_login_email();
-  }
-  else{
-    $('#hoa_page_2')
-    .modal('show');
-  }
 }
 
 function Hoa_chart_button(){
@@ -62,13 +56,7 @@ function Hoa_login_page_login(){
 }
 
 function user_login_email(){
-  if(constants.email_form){
-    $('#hoa_email_form')
-    .modal('show');
-    $('.menu .item')
-    .tab();
-  }
-  else{
+
   var html_str = '\
   <div id="hoa_email_form" class="ui longer modal">\
     <i class="close icon"></i>\
@@ -100,25 +88,12 @@ function user_login_email(){
   </div>';
   var insertDiv = document.getElementById("hoa_insert");
   insertDiv.innerHTML = html_str;
-  
-  $(function(){
-    $.ajax({
-      type:"POST",
-      url:"wp-content/plugins/my-example/js/hoa_email_form.html",
-      cache:false,
-      success:function(html){
-        var email_formDiv =document.getElementById("tab_one_form");
-        email_formDiv.innerHTML = html;
-      }
-    });
-  });
 
   $('#hoa_email_form')
   .modal('show');
   $('.menu .item')
   .tab();
   constants.email_form = true;
-  }
   
 }
 

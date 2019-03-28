@@ -4,6 +4,111 @@
  * Description: This is just an example plugin
  */
 
+/*
+php option variables
+*/
+$username = "";
+$password = "";
+$privilege = "";
+/*
+Set the options in to wordpress 
+*/ 
+
+add_option("hoa_username",$username);
+add_option("hoa_password",$password);
+add_option("hoa_privilege",$privilege);
+
+/*
+The plugin setting area
+add_option('color','red);
+*/
+
+
+
+
+/*
+Add menu page
+*/
+
+/*example
+*/
+
+// Hook for adding admin menus
+add_action('admin_menu', 'hoa_add_pages');
+
+// action function for above hook
+function hoa_add_pages() {
+
+   //($parent_slug, $page_title,$menu_title,$capability,$menu_slug, $function)
+
+    // Add a new submenu under Settings:
+    add_options_page('HOA Settings','HOA Settings', 'manage_options', 'hoasettings', 'hoa_settings_page');
+
+    // Add a new submenu under Tools:
+    add_management_page( 'HOA Tools', 'HOA Tools', 'manage_options', 'hoatools', 'hoa_tools_page');
+
+    // Add a new top-level menu (ill-advised):
+    add_menu_page('HOA Settings', 'HOA Settings', 'manage_options', 'hoa-top-level-handle', 'hoa_toplevel_page' );
+
+    // Add a submenu to the custom top-level menu:
+    add_submenu_page('hoa-top-level-handle', 'HOA Sublevel', 'HOA Sublevel', 'manage_options', 'sub-page', 'hoa_sublevel_page');
+
+    // Add a second submenu to the custom top-level menu:
+    add_submenu_page('hoa-top-level-handle', 'HOA Sublevel 2', 'HOA Sublevel 2', 'manage_options', 'sub-page2', 'hoa_sublevel_page2');
+}
+
+// mt_settings_page() displays the page content for the Test Settings submenu
+function hoa_settings_page() {
+    echo "<h2>" . __( 'HOA Settings', 'menu-test' ) . "</h2>";
+}
+
+// mt_tools_page() displays the page content for the Test Tools submenu
+function hoa_tools_page() {
+    echo "<h2>" . __( 'HOA Tools', 'menu-test' ) . "</h2>";
+}
+
+// mt_toplevel_page() displays the page content for the custom Test Toplevel menu
+function hoa_toplevel_page() {
+    echo "<h2>" . __( 'HOA Settings', 'menu-test' ) . "</h2>";
+}
+
+// mt_sublevel_page() displays the page content for the first submenu
+// of the custom Test Toplevel menu
+function hoa_sublevel_page() {
+    echo "<h2>" . __( 'Test Sublevel', 'menu-test' ) . "</h2>";
+}
+
+// mt_sublevel_page2() displays the page content for the second submenu
+// of the custom Test Toplevel menu
+function hoa_sublevel_page2() {
+    echo "<h2>" . __( 'Test Sublevel2', 'menu-test' ) . "</h2>";
+}
+
+/*
+Plugin Administartion Page
+*/
+
+add_action('admin_menu','hoa_admin_page');
+function hoa_admin_page(){
+   add_object_page('HOA Plugin','HOA Plugin','manage_options','hoa_plugin','hoa_plugin_options_page');
+}
+
+function hoa_plugin_options_page(){
+   ?>
+   <div class="wrap">
+   <?php screen_icon();?>
+   <h2>HOA Plugin Setting</h2>
+   <form action="options.php" method="post">
+   </form></div>
+   <?php
+}
+
+
+
+
+
+
+
 add_action('wp_enqueue_scripts', 'hoa_setting_up_scripts');
 function hoa_setting_up_scripts() {
     //wp_register_style( 'hoa_css', plugins_url('css/hoa_style.css',__FILE__) );
@@ -23,7 +128,7 @@ function hoa_setting_up_scripts() {
      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/components/modal.css"/>
 
      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
-     <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.js"></script>
+     <script src="https://cdnjs.cloudflare.com/ajax/libs/sema/ntic-ui/2.4.1/semantic.min.js"></script>
      <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/components/popup.js"></script>
      <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/components/popup.min.js"></script>
      <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/components/modal.js"></script>
@@ -50,7 +155,7 @@ function hoa_setting_up_scripts() {
       </div>
 
       <div class="item">
-         <button class="ui active button" style="width:130px" onclick=Hoa_mail_button()><i class="big envelope icon"></i> Mail </button>
+         <button class="ui active button" style="width:130px" onclick=user_login_email()><i class="big envelope icon"></i> Mail </button>
       </div>
 
 
