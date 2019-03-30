@@ -6,6 +6,32 @@
 
 
 /*
+Get Current User information
+*/
+$current_user;
+$current_user_id;
+$current_user_name;
+$current_user_email;
+$current_user_firstname;
+$current_user_lastname;
+$current_user_display_name;
+$current_user_role;
+
+add_action('init','init_hoa_plugin');
+
+function init_hoa_plugin(){
+   $current_user = wp_get_current_user();
+   $current_user_id = $current_user->ID;
+   update_option('hoa_user_id',$current_user->ID);
+   update_option('hoa_user_name',$current_user->user_login);
+   update_option('hoa_user_email',$current_user->user_email);
+   update_option('hoa_user_firstname',$current_user->user_firstname);
+   update_option('hoa_user_lastname',$current_user->user_lastname);
+   update_option('hoa_user_dispaly_name',$current_user->display_name);
+   update_option('hoa_user_role',implode(', ', get_userdata($current_user_id)->roles));
+}
+
+/*
 import varibale php
 */
 
@@ -27,6 +53,54 @@ add_option("hoa_privilege",$privilege);
 The plugin setting area
 add_option('color','red);
 */
+
+/*
+Create the roles
+*/
+add_role(
+   'Homeowener',
+   __( 'Homeowner' ),
+   array(
+       'read'         => true,  // true allows this capability
+       'edit_posts'   => true,
+   )
+);
+
+add_role(
+   'Property Manager Employee',
+   __( 'Property Manager Employee' ),
+   array(
+       'read'         => true,  // true allows this capability
+       'edit_posts'   => true,
+   )
+);
+
+add_role(
+   'Property Manager Supervisor',
+   __( 'Property Manager Supervisor' ),
+   array(
+       'read'         => true,  // true allows this capability
+       'edit_posts'   => true,
+   )
+);
+
+add_role(
+   'Board of Directors Member',
+   __( 'Board of Directors Member' ),
+   array(
+       'read'         => true,  // true allows this capability
+       'edit_posts'   => true,
+   )
+);
+
+add_role(
+   'Board of Directors President',
+   __( 'Board of Directors President' ),
+   array(
+       'read'         => true,  // true allows this capability
+       'edit_posts'   => true,
+   )
+);
 
 
 
@@ -140,79 +214,331 @@ class hoa_widget extends WP_Widget {
       $defaults = array('title' => 'Homeowner Assistant', 'movie' => '', 'song' => '', 'hoa_content'=> '');
       $instance = wp_parse_args((array) $instance, $defaults );
       $title = $instance['title'];
-      $movie = $instance['movie'];
-      $song = $instance['song'];
       $hoa_content = $instance['hoa_content'];
       ?>
-      <p>Title:<input class=”widefat” 
-         name="<?php echo $this->get_field_name('title');?>" 
-         type="text" value=" <?php echo esc_attr( $title );?>"/></p>
-      <p> Favorite Movie: <input class="widefat" 
-         name="<?php echo $this->get_field_name('movie');?>"
-         type=”text” value="<?php echo esc_attr( $movie );?>"></p>
-      <p> Favorite Song: <textarea class="widefat"
-         name="<?php echo $this-> get_field_name('song');?>" 
-         value="<?php echo esc_attr($song);?>"> </textarea></p>
-      <p>Content in HOA Widget:<textarea class="widefat"
-         name="<?php echo $this-> get_field_name('hoa_content');?>"
-         value="<?php echo esc_attr( $hoa_content );?>"></textarea></p>
+      <p>Title:<input class=”widefat” name="<?php echo $this->get_field_name('title');?>" 
+         type="text" value="<?php echo esc_attr($title);?>"/></p>
+      <p>Content in HOA Widget:<textarea class="widefat" name="<?php echo $this-> get_field_name('hoa_content');?>"
+         value="<?php echo esc_attr($hoa_content);?>"></textarea></p>
       <?php
    }
+
    //save the widget settings
    function update($new_instance, $old_instance) {
       $instance = $old_instance;
       $instance['title'] = strip_tags( $new_instance['title'] );
-      $instance['movie'] = strip_tags( $new_instance['movie'] );
-      $instance['song'] = strip_tags( $new_instance['song'] );
       $instance['hoa_content'] = strip_tags( $new_instance['hoa_content'] );
       return $instance;
    }
+
    //display the widget
    function widget($args, $instance) {
       extract($args);
       echo $before_widget;
+      $user_name = get_option('hoa_user_name');
+      $user_role = get_option('hoa_user_role');
       $title = apply_filters('widget_title', $instance['title']);
-      $movie = empty( $instance['movie'] )?'& nbsp;':$instance['movie'];
-      $song = empty( $instance['song'] )?'& nbsp;':$instance['song'];
-      $this->$php_content = empty( $instance['hoa_content'] )?'& nbsp;':$instance['hoa_content'];
+      $php_content = empty($instance['hoa_content'] )?'& nbsp;':$instance['hoa_content'];
+
       if (!empty($title) ) { echo $before_title . $title . $after_title; };
-         echo '<p> Fav Movie:' . $movie . '</p>';
-         echo '<p> Fav Song:'. $hoa_test . '</p>';
-         echo '<div id="hoa_insert"><p> The content:'. $this->$php_content . '</p></div>';
+         echo '<p> HI ' . $user_name . '</p>';
+         echo '<p> You are one of '. $user_role . 's in our community.</p>';
+         echo '<p> '. $this->$php_content . '</p>';
          echo $after_widget;
+      if($user_role=='homeowner'){$this->hoa_homeowner();}
+      elseif($user_role=='Board of Directors Member'||$user_role=='Board of Directors President'){$this->hoa_board_member();}
+      elseif($user_role=='Property Manager Employee'){$this->hoa_property_employee();}
+      elseif($user_role=='Property Manager Supervisor'){$this->hoa_property_supervisor();}
+      //else{$this->hoa_property_manager_employee();}
+      
+   }
+
+   
+   //property_supervisor
+
+   function hoa_property_employee(){
+      
          ?>
-         <div class="ui horizontal relaxed list">
-            <div class="item">
+         <div id="hoa_insert_place"></div>
+         
+         <div id="hoa_add_request_page" class="ui longe modal">
+            <div class="content">
+         <form id="email_form" class="ui form">
+        <h4 class="ui dividing header">Hoa Request Form</h4>
+        <div class="field">
+          <label>Name</label>
+          <div class="two fields">
+            <div class="field">
+              <input id="hoa_c_first_name" type="text" name="hoa-first-name" placeholder="First Name">
+            </div>
+            <div class="field">
+              <input id="hoa_c_last_name" type="text" name="hoa-last-name" placeholder="Last Name">
+            </div>
+          </div>
+        </div>
+        
+        <div class="two fields">
+            <div class="field">
+              <label>Phone Number</label>
+              <div class="filed">
+                  <input id="hoa_c_phone_number" type="number" name="hoa-from-phone" placeholder="Your Phone Number">
+              </div>
+            </div>
+          <div class="field">
+            <label>Email Address</label>
+            <div class="filed">
+              <input id="hoa_c_email" type="text" name="hoa-from-email" placeholder="Your Email">
+            </div>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Address</label>
+          <div class="fields">
+            <div class="twelve wide field">
+              <input id="hoa_c_address" type="text" name="hoa-address" placeholder="Street Address">
+            </div>
+            <div class="four wide field">
+              <input id="hoa_c_apt" type="text" name="hoa-address-2" placeholder="Apt #">
+            </div>
+          </div>
+        </div>
+        <div class="two fields">
+          <div class="field">
+            <label>State</label>
+            <select id="hoa_c_state" class="ui fluid dropdown">
+              <option value="">State</option>
+          <option value="AL">Alabama</option>
+          <option value="AK">Alaska</option>
+          <option value="AZ">Arizona</option>
+          <option value="AR">Arkansas</option>
+          <option value="CA">California</option>
+          <option value="CO">Colorado</option>
+          <option value="CT">Connecticut</option>
+          <option value="DE">Delaware</option>
+          <option value="DC">District Of Columbia</option>
+          <option value="FL">Florida</option>
+          <option value="GA">Georgia</option>
+          <option value="HI">Hawaii</option>
+          <option value="ID">Idaho</option>
+          <option value="IL">Illinois</option>
+          <option value="IN">Indiana</option>
+          <option value="IA">Iowa</option>
+          <option value="KS">Kansas</option>
+          <option value="KY">Kentucky</option>
+          <option value="LA">Louisiana</option>
+          <option value="ME">Maine</option>
+          <option value="MD">Maryland</option>
+          <option value="MA">Massachusetts</option>
+          <option value="MI">Michigan</option>
+          <option value="MN">Minnesota</option>
+          <option value="MS">Mississippi</option>
+          <option value="MO">Missouri</option>
+          <option value="MT">Montana</option>
+          <option value="NE">Nebraska</option>
+          <option value="NV">Nevada</option>
+          <option value="NH">New Hampshire</option>
+          <option value="NJ">New Jersey</option>
+          <option value="NM">New Mexico</option>
+          <option value="NY">New York</option>
+          <option value="NC">North Carolina</option>
+          <option value="ND">North Dakota</option>
+          <option value="OH">Ohio</option>
+          <option value="OK">Oklahoma</option>
+          <option value="OR">Oregon</option>
+          <option value="PA">Pennsylvania</option>
+          <option value="RI">Rhode Island</option>
+          <option value="SC">South Carolina</option>
+          <option value="SD">South Dakota</option>
+          <option value="TN">Tennessee</option>
+          <option value="TX">Texas</option>
+          <option value="UT">Utah</option>
+          <option value="VT">Vermont</option>
+          <option value="VA">Virginia</option>
+          <option value="WA">Washington</option>
+          <option value="WV">West Virginia</option>
+          <option value="WI">Wisconsin</option>
+          <option value="WY">Wyoming</option>
+            </select>
+          </div>
+          
+          <div class="field">
+              <label>Country</label>
+              <input id="hoa_c_country" type="text" name="Country" placeholder="US">
+            </div>
+        </div>
+
+        <div class="field">
+            <label>Community</label>
+            <select id="hoa_c_community" class="ui fluid dropdown">
+              <option value="">Community_1</option>
+              <option value="AL">Community_2</option>
+              <option value="AK">Community_3</option>
+              <option value="AZ">Community_4</option>
+              <option value="AR">Other</option>
+            </select>
+        </div>
+
+            <div class="field">
+              <label>Email Content</label>
+              <textarea id="hoa_c_email_content"></textarea>
+            </div>
+      </form>
+      
+      
+      </div>
+      <div class="actions">
+      <div class="ui positive right button" onclick=HOA_Send_Mail()>
+        Add Request
+      </div>
+      </div>
+         </div>
+         
+
+         <div class="three ui buttons" style="margin-bottom:30px">
+               <div class="ui animated button" tabindex="0" onclick=Hoa_add_request_button()>
+                  <div class="hidden content">Add Request</div>
+                  <div class="visible content">
+                  <i class="wpforms icon"></i>
+               </div>
+               </div>
+            
+               <div class="ui animated button" tabindex="0" onclick=Hoa_property_employee_box_button()>
+                  <div class="hidden content">Reuqest Box</div>
+                  <div class="visible content">
+                  <i class="box icon"></i>
+               </div>
+               </div>
+
+
+               <div class="ui animated button" tabindex="0" onclick=Hoa_property_employee_chart_button_()>
+                  <div class="hidden content">Chart</div>
+                  <div class="visible content">
+                  <i class="chart area icon"></i>
+               </div>
+            </div>
+         </div>
+         <?php
+   }
+
+
+
+   //for hoa_property_supervisor
+   function hoa_property_supervisor(){
+         ?>
+         <div id="hoa_insert_place"></div>
+         
+
+         <div class="two ui buttons" style="margin-bottom:30px">
+               <div class="ui animated button" tabindex="0" onclick=Hoa_assign_work_button()>
+                  <div class="hidden content">Assign Work</div>
+                  <div class="visible content">
+                  <i class="sitemap icon"></i>
+               </div>
+               </div>
+            
+               <div class="ui animated button" tabindex="0" onclick=Hoa_property_supervisor_chart_button()>
+                  <div class="hidden content">Report</div>
+                  <div class="visible content">
+                  <i class="chart area icon"></i>
+               </div>
+               </div>
+         </div>
+         <?php
+   }
+
+
+   function hoa_board_member(){
+
+         ?>
+         <div id="hoa_insert_place"></div>
+         
+         <div id="hoa_page_1" class="ui longe modal">
+               <i class="close icon"></i>
+            <div class="header">
+               HOA PhoneNumber  571-234-1532
+            </div>
+            <div class="content">
+               HOA will help you to manage your Home.
+            </div>
+            <div class="actions">
+               <div class="ui positive right button">
+                  Confirm
+               </div>
+            </div>
+         </div>
+         
+
+         <div class="three ui buttons" style="margin-bottom:30px">
                <div class="ui animated button" tabindex="0" onclick=Hoa_phone_button()>
                   <div class="hidden content">Call</div>
                   <div class="visible content">
                   <i class="phone icon"></i>
                </div>
                </div>
-            </div>
             
-         
-            <div class="item">
-               <div class="ui animated button" tabindex="0" onclick=user_login_email()>
+               <div class="ui animated button" tabindex="0" onclick=Hoa_board_email_button()>
                   <div class="hidden content">Mail</div>
                   <div class="visible content">
                   <i class="envelope icon"></i>
                </div>
                </div>
+
+
+               <div class="ui animated button" tabindex="0" onclick=Hoa_board_chart_button_()>
+                  <div class="hidden content">Chart</div>
+                  <div class="visible content">
+                  <i class="chart area icon"></i>
+               </div>
             </div>
+         </div>
+         <?php
+   }
+
+   //show for homeowner only
+   function hoa_homeowner(){
+         //test
+         ?>
+         <div id="hoa_insert_place"></div>
+            <div id="hoa_page_1" class="ui longe modal">
+               <i class="close icon"></i>
+            <div class="header">
+               HOA PhoneNumber  571-234-1532
+            </div>
+            <div class="content">
+               HOA will help you to manage your Home.
+            </div>
+            <div class="actions">
+               <div class="ui positive right button">
+                  Confirm
+               </div>
+            </div>
+            </div>
+         
+
+         <div class="three ui buttons" style="margin-bottom:30px">
+               <div class="ui animated button" tabindex="0" onclick=Hoa_phone_button()>
+                  <div class="hidden content">Call</div>
+                  <div class="visible content">
+                  <i class="phone icon"></i>
+               </div>
+               </div>
+            
+               <div class="ui animated button" tabindex="0" onclick=Hoa_email_button()>
+                  <div class="hidden content">Mail</div>
+                  <div class="visible content">
+                  <i class="envelope icon"></i>
+               </div>
+               </div>
 
 
-            <div class="item">
                <div class="ui animated button" tabindex="0" onclick=Hoa_chart_button()>
                   <div class="hidden content">Chart</div>
                   <div class="visible content">
                   <i class="chart area icon"></i>
                </div>
-               </div>
             </div>
          </div>
-         
-
          <?php
       }
 
@@ -247,92 +573,6 @@ class hoa_widget extends WP_Widget {
  }
 
  add_action('wp_footer','add_semantic_ui');
-
-
- function add_hoa_content(){
-    ?>
-    
-   <div id="hoa_plugin">
-    <!--Test-->
-    <div class="ui middle aligned animated list" style="position:fixed;z-index:1000;top:40%;">
-      <div class="item">
-         <button class="ui active button" id="hoa_phone" style="width:130px" onclick=Hoa_phone_button()><i class="big phone icon"></i>Call </button>
-      </div>
-
-      <div class="item">
-         <button class="ui active button" style="width:130px" onclick=user_login_email()><i class="big envelope icon"></i> Mail </button>
-      </div>
-
-
-      <div class="item">
-         <button class="ui active button" style="width:130px" onclick=Hoa_chart_button()><i class="big chart area icon"></i> Chart </button>
-      </div>
-     </div>
-   </div>
-   
-<!--the place will be inserted html-->   
-<div id="hoa_insert">
-   
-</div>
-
-
-
-
-<!--login page-->
-<div id="hoa_page_2"class="ui longe modal">
-  <i class="close icon"></i>
-  <div class="header">
-     HOA Login
-  </div>
-  <div class="content">
-
-   <div class="ui labeled input" style="margin-left:30px;">
-      <div class="ui label">
-         UserName
-      </div>
-      <input id="hoa_username" type="text" placeholder="UserName" value="" style="width:250px">
-   </div>
-
-   <div class="ui labeled input" style="margin-left:50px">
-      <div class="ui label">
-         PassWord
-      </div>
-      <input id="hoa_password" type="text" placeholder="PassWord" value="" style="width:250px">
-   </div>
-
-  </div>
-  <div class="actions">
-    <div class="ui black deny button">
-      Cancel
-    </div>
-    <div class="ui positive right button" onclick=Hoa_login_page_login()>
-      Log In
-    </div>
-  </div>
-</div>
-
-
-
-<!--chart page-->
-<div id="hoa_page_3"class="ui long modal">
-  <i class="close icon"></i>
-  <div class="header">
-     Chart
-  </div>
-  <div class="content">
-      HOA will help you to manage your Home.
-
-  </div>
-  <div class="actions">
-    <div class="ui positive right button">
-      Confirm
-    </div>
-  </div>
-</div>
-    
-    <?php
- }
-// add_action('wp','add_hoa_content');
 
 
 

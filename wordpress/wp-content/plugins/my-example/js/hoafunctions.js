@@ -4,48 +4,32 @@ var html_file = "wp-content/plugins/"+plugin_name+"/html/";
 var php_file = "wp-content/plugins/"+plugin_name+"/";
 
 function Hoa_phone_button(){
-$('#hoa_insert').load(html_file+'hoa_phone.html');
-$('#hoa_page_1')
-.modal('show');
-console.log("work1!");
+  $('#hoa_page_1').modal('show');
 }
 
 
-function Hoa_mail_button(){
-    user_login_email();
-}
-
-function Hoa_chart_button(){
-  if(constants.login_status){
-    user_login_email();
-  }else{
-    $('#hoa_page_2')
-    .modal('show');
-  }
-}
-
-function user_login_email(){
+function Hoa_email_button(){
 
   var html_str = '\
-  <div id="hoa_email_form" class="ui longer modal">\
+  <div id="hoa_email_form" class="ui longe modal">\
     <i class="close icon"></i>\
       <div class="header">\
         HOA Request Form\
       </div>\
     <div class="content">\
       <div class="ui top attached tabular menu">\
-      <a class="item" data-tab="Request">Request</a>\
-      <a class="item" data-tab="Report_1">Report_1</a>\
-      <a class="item active" data-tab="Report_2">Report_2</a>\
+      <a class="item active"" data-tab="Request">Request</a>\
+      <a class="item" data-tab="Information_Box">Message Box</a>\
+      <a class="item" data-tab="User_Request">Your Requests</a>\
     </div>\
-    <div id="tab_one_form" class="ui bottom attached tab segment" data-tab="Request">\
+    <div id="tab_one_form" class="ui bottom attached tab segment active" data-tab="Request">\
       <!--Form-->\
       \
     </div>\
-    <div class="ui bottom attached tab segment" data-tab="Report_1">\
+    <div class="ui bottom attached tab segment" data-tab="Information_Box">\
       Second\
     </div>\
-    <div class="ui bottom attached tab segment active" data-tab="Report_2">\
+    <div class="ui bottom attached tab segment" data-tab="User_Request">\
       Third\
     </div>\
     </div>\
@@ -55,13 +39,296 @@ function user_login_email(){
       </div>\
     </div>\
   </div>';
-  var insertDiv = document.getElementById("hoa_insert");
+  var insertDiv = document.getElementById("hoa_insert_place");
   insertDiv.innerHTML = html_str;
   $('#tab_one_form').load(html_file+'hoa_email_form.html');
   $('#hoa_email_form').modal('show');
   $('.menu .item').tab();
  
   
+}
+
+
+function Hoa_chart_button(){
+
+  var html_str = '\
+  <div id="hoa_report_form" class="ui longe modal">\
+    <i class="close icon"></i>\
+      <div class="header">\
+        HOA Report\
+      </div>\
+    <div class="content">\
+      <div class="ui top attached tabular menu">\
+      <a class="item active"" data-tab="Report_1">Your Report_1</a>\
+      <a class="item" data-tab="Report_2">Your Report_2</a>\
+      <a class="item" data-tab="Report_3">Your Report_3</a>\
+    </div>\
+    <div id="tab_one_form" class="ui bottom attached tab segment active" data-tab="Report_1">\
+      <!--Form-->\
+      \
+    </div>\
+    <div class="ui bottom attached tab segment" data-tab="Report_2">\
+      Second\
+    </div>\
+    <div class="ui bottom attached tab segment" data-tab="Report_3">\
+      Third\
+    </div>\
+    </div>\
+    <div class="actions">\
+      <div class="ui positive right button">\
+        Confirm\
+      </div>\
+    </div>\
+  </div>';
+  
+  var insertDiv = document.getElementById("hoa_insert_place");
+  insertDiv.innerHTML = html_str;
+  
+  //$('#tab_one_form').load(html_file+'hoa_email_form.html');
+  
+  $('#hoa_report_form').modal('show');
+  $('.menu .item').tab();
+
+}
+
+
+//Board Member
+function Hoa_board_email_button(){
+
+  var html_str = '\
+  <div id="hoa_email_form" class="ui longe modal">\
+    <i class="close icon"></i>\
+      <div class="header">\
+        HOA Request Form\
+      </div>\
+    <div class="content">\
+      <div class="ui top attached tabular menu">\
+      <a class="item active"" data-tab="Request">Request</a>\
+      <a class="item" data-tab="Information_Box">Message Box</a>\
+      <a class="item" data-tab="User_Request">Your Requests</a>\
+    </div>\
+    <div id="tab_one_form" class="ui bottom attached tab segment active" data-tab="Request">\
+      <!--Form-->\
+      \
+    </div>\
+    <div class="ui bottom attached tab segment" data-tab="Information_Box">\
+      Second\
+    </div>\
+    <div class="ui bottom attached tab segment" data-tab="User_Request">\
+      Third\
+    </div>\
+    </div>\
+    <div class="actions">\
+      <div class="ui positive right button">\
+        Confirm\
+      </div>\
+    </div>\
+  </div>';
+  var insertDiv = document.getElementById("hoa_insert_place");
+  insertDiv.innerHTML = html_str;
+  $('#tab_one_form').load(html_file+'hoa_email_form.html');
+  $('#hoa_email_form').modal('show');
+  $('.menu .item').tab();
+ 
+  
+}
+
+function Hoa_board_chart_button(){
+  var html_str = '\
+  <div id="hoa_report_form" class="ui longe modal">\
+    <i class="close icon"></i>\
+      <div class="header">\
+        HOA Report\
+      </div>\
+    <div class="content">\
+      <div class="ui top attached tabular menu">\
+      <a class="item active"" data-tab="Report_1">Your Report_1</a>\
+      <a class="item" data-tab="Report_2">Your Report_2</a>\
+      <a class="item" data-tab="Report_3">Your Report_3</a>\
+      <a class="item" data-tab="Report_4">Community Report</a>\
+    </div>\
+    <div id="tab_one_form" class="ui bottom attached tab segment active" data-tab="Report_1">\
+      <!--Form-->\
+      \
+    </div>\
+    <div class="ui bottom attached tab segment" data-tab="Report_2">\
+      Second\
+    </div>\
+    <div class="ui bottom attached tab segment" data-tab="Report_3">\
+      Third\
+    </div>\
+    <div class="ui bottom attached tab segment" data-tab="Report_4">\
+      Third\
+    </div>\
+    </div>\
+    <div class="actions">\
+      <div class="ui positive right button">\
+        Confirm\
+      </div>\
+    </div>\
+  </div>';
+  
+  var insertDiv = document.getElementById("hoa_insert_place");
+  insertDiv.innerHTML = html_str;
+  
+  //$('#tab_one_form').load(html_file+'hoa_email_form.html');
+  
+  $('#hoa_report_form').modal('show');
+  $('.menu .item').tab();
+
+}
+
+
+
+
+
+//property_employee
+
+function Hoa_add_request_button(){
+  $('#hoa_add_request_page').modal('show');
+}
+
+function Hoa_property_employee_box_button(){
+  var html_str = '\
+  <div id="employee_box" class="ui longe modal">\
+    <i class="close icon"></i>\
+      <div class="header">\
+        HOA Request Form\
+      </div>\
+    <div class="content">\
+      <div class="ui top attached tabular menu">\
+      <a class="item active"" data-tab="Request_Box">Request Box</a>\
+      <a class="item" data-tab="Information_Box">Message Box</a>\
+      <a class="item" data-tab="User_Request">Your Requests</a>\
+    </div>\
+    <div id="tab_one_form" class="ui bottom attached tab segment active" data-tab="Request_Box">\
+      <!--Form-->\
+      \
+    </div>\
+    <div class="ui bottom attached tab segment" data-tab="Information_Box">\
+      Second\
+    </div>\
+    <div class="ui bottom attached tab segment" data-tab="User_Request">\
+      Third\
+    </div>\
+    </div>\
+    <div class="actions">\
+      <div class="ui positive right button">\
+        Confirm\
+      </div>\
+    </div>\
+  </div>';
+  var insertDiv = document.getElementById("hoa_insert_place");
+  insertDiv.innerHTML = html_str;
+  //$('#tab_one_form').load(html_file+'hoa_email_form.html');
+  $('#employee_box').modal('show');
+  $('.menu .item').tab();
+}
+
+function Hoa_property_employee_chart_button_(){
+  var html_str = '\
+  <div id="employee_box" class="ui longe modal">\
+    <i class="close icon"></i>\
+      <div class="header">\
+        Report\
+      </div>\
+    <div class="content">\
+      <div class="ui top attached tabular menu">\
+      <a class="item active"" data-tab="Report_1">Report_1</a>\
+      <a class="item" data-tab="Report_2">Report_2</a>\
+      <a class="item" data-tab="Report_3">Report_3</a>\
+    </div>\
+    <div id="tab_one_form" class="ui bottom attached tab segment active" data-tab="Report_1">\
+      <!--Form-->\
+      \
+    </div>\
+    <div class="ui bottom attached tab segment" data-tab="Report_2">\
+      Second\
+    </div>\
+    <div class="ui bottom attached tab segment" data-tab="Report_3">\
+      Third\
+    </div>\
+    </div>\
+    <div class="actions">\
+      <div class="ui positive right button">\
+        Confirm\
+      </div>\
+    </div>\
+  </div>';
+  var insertDiv = document.getElementById("hoa_insert_place");
+  insertDiv.innerHTML = html_str;
+  //$('#tab_one_form').load(html_file+'hoa_email_form.html');
+  $('#employee_box').modal('show');
+  $('.menu .item').tab();
+}
+
+
+//supervisor
+
+function Hoa_assign_work_button(){
+  var html_str = '\
+  <div id="assign_work_page" class="ui longe modal">\
+    <i class="close icon"></i>\
+      <div class="header">\
+        Manage Panel\
+      </div>\
+    <div class="content">\
+      <div class="ui top attached tabular menu">\
+      <a class="item active"" data-tab="assign_work">Assign Work</a>\
+      <a class="item" data-tab="work_status">Work Status</a>\
+    </div>\
+    <div id="tab_one_form" class="ui bottom attached tab segment active" data-tab="assign_work">\
+      <!--Form-->\
+      \
+    </div>\
+    <div class="ui bottom attached tab segment" data-tab="work_status">\
+      Second\
+    </div>\
+    </div>\
+    <div class="actions">\
+      <div class="ui positive right button">\
+        Confirm\
+      </div>\
+    </div>\
+  </div>';
+  var insertDiv = document.getElementById("hoa_insert_place");
+  insertDiv.innerHTML = html_str;
+  //$('#tab_one_form').load(html_file+'hoa_email_form.html');
+  $('#assign_work_page').modal('show');
+  $('.menu .item').tab();
+}
+
+function Hoa_property_supervisor_chart_button(){
+  var html_str = '\
+  <div id="supervisor_report" class="ui longe modal">\
+    <i class="close icon"></i>\
+      <div class="header">\
+        Manage Panel\
+      </div>\
+    <div class="content">\
+      <div class="ui top attached tabular menu">\
+      <a class="item active"" data-tab="report_1">Report_1</a>\
+      <a class="item" data-tab="report_2">Report_2</a>\
+    </div>\
+    <div id="tab_one_form" class="ui bottom attached tab segment active" data-tab="report_1">\
+      <!--Form-->\
+      \
+    </div>\
+    <div class="ui bottom attached tab segment" data-tab="report_2">\
+      Second\
+    </div>\
+    </div>\
+    <div class="actions">\
+      <div class="ui positive right button">\
+        Confirm\
+      </div>\
+    </div>\
+  </div>';
+  var insertDiv = document.getElementById("hoa_insert_place");
+  insertDiv.innerHTML = html_str;
+  //$('#tab_one_form').load(html_file+'hoa_email_form.html');
+  $('#supervisor_report').modal('show');
+  $('.menu .item').tab();
 }
 
 //MD5js
