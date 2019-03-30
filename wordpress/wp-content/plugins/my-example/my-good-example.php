@@ -4,6 +4,11 @@
  * Description: This is just an example plugin
  */
 
+
+/*
+import varibale php
+*/
+
 /*
 php option variables
 */
@@ -105,37 +110,137 @@ function hoa_plugin_options_page(){
 
 
 
+/*
+init widgets
+*/
 
-
-
-
-add_action('wp_enqueue_scripts', 'hoa_setting_up_scripts');
-function hoa_setting_up_scripts() {
-    //wp_register_style( 'hoa_css', plugins_url('css/hoa_style.css',__FILE__) );
-    //wp_enqueue_style( 'hoa_css' );
-
+// use widgets_init action hook to execute custom function
+add_action( 'widgets_init', 'hoa_register_widgets' );
+//register our widget
+function hoa_register_widgets() {
+   register_widget( 'hoa_widget' );
 }
+//boj_widget_my_info class
+class hoa_widget extends WP_Widget {
+
+   //process the new widget
+   function hoa_widget() {
+      $this->$php_content="";
+
+      //Set the options of widget 
+      $widget_ops = array(
+            'classname' => 'hoa_widget_class',
+            'description' => 'Help the houseowner.'
+      );
+      //Set the name of Widget
+      $this-> WP_Widget( 'hoa_widget', 'Homeowner Assistant',$widget_ops );
+   }
+//build the widget settings form
+   function form($instance) {
+      $defaults = array('title' => 'Homeowner Assistant', 'movie' => '', 'song' => '', 'hoa_content'=> '');
+      $instance = wp_parse_args((array) $instance, $defaults );
+      $title = $instance['title'];
+      $movie = $instance['movie'];
+      $song = $instance['song'];
+      $hoa_content = $instance['hoa_content'];
+      ?>
+      <p>Title:<input class=”widefat” 
+         name="<?php echo $this->get_field_name('title');?>" 
+         type="text" value=" <?php echo esc_attr( $title );?>"/></p>
+      <p> Favorite Movie: <input class="widefat" 
+         name="<?php echo $this->get_field_name('movie');?>"
+         type=”text” value="<?php echo esc_attr( $movie );?>"></p>
+      <p> Favorite Song: <textarea class="widefat"
+         name="<?php echo $this-> get_field_name('song');?>" 
+         value="<?php echo esc_attr($song);?>"> </textarea></p>
+      <p>Content in HOA Widget:<textarea class="widefat"
+         name="<?php echo $this-> get_field_name('hoa_content');?>"
+         value="<?php echo esc_attr( $hoa_content );?>"></textarea></p>
+      <?php
+   }
+   //save the widget settings
+   function update($new_instance, $old_instance) {
+      $instance = $old_instance;
+      $instance['title'] = strip_tags( $new_instance['title'] );
+      $instance['movie'] = strip_tags( $new_instance['movie'] );
+      $instance['song'] = strip_tags( $new_instance['song'] );
+      $instance['hoa_content'] = strip_tags( $new_instance['hoa_content'] );
+      return $instance;
+   }
+   //display the widget
+   function widget($args, $instance) {
+      extract($args);
+      echo $before_widget;
+      $title = apply_filters('widget_title', $instance['title']);
+      $movie = empty( $instance['movie'] )?'& nbsp;':$instance['movie'];
+      $song = empty( $instance['song'] )?'& nbsp;':$instance['song'];
+      $this->$php_content = empty( $instance['hoa_content'] )?'& nbsp;':$instance['hoa_content'];
+      if (!empty($title) ) { echo $before_title . $title . $after_title; };
+         echo '<p> Fav Movie:' . $movie . '</p>';
+         echo '<p> Fav Song:'. $hoa_test . '</p>';
+         echo '<div id="hoa_insert"><p> The content:'. $this->$php_content . '</p></div>';
+         echo $after_widget;
+         ?>
+         <div class="ui horizontal relaxed list">
+            <div class="item">
+               <div class="ui animated button" tabindex="0" onclick=Hoa_phone_button()>
+                  <div class="hidden content">Call</div>
+                  <div class="visible content">
+                  <i class="phone icon"></i>
+               </div>
+               </div>
+            </div>
+            
+         
+            <div class="item">
+               <div class="ui animated button" tabindex="0" onclick=user_login_email()>
+                  <div class="hidden content">Mail</div>
+                  <div class="visible content">
+                  <i class="envelope icon"></i>
+               </div>
+               </div>
+            </div>
+
+
+            <div class="item">
+               <div class="ui animated button" tabindex="0" onclick=Hoa_chart_button()>
+                  <div class="hidden content">Chart</div>
+                  <div class="visible content">
+                  <i class="chart area icon"></i>
+               </div>
+               </div>
+            </div>
+         </div>
+         
+
+         <?php
+      }
+
+   }
+
+
+
+
+
  //add semantic ui to wb_header
 
 
  function add_semantic_ui(){
     ?>
     <!--plugin css-->
-     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.css"/>
+     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.css"/>
      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/components/popup.css"/>
      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/components/popup.min.css"/>
      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/components/modal.css"/>
-     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/components/modal.css"/>
+     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/components/dimmer.css"/>
 
-     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
-     <script src="https://cdnjs.cloudflare.com/ajax/libs/sema/ntic-ui/2.4.1/semantic.min.js"></script>
+     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+     <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.js"></script>
      <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/components/popup.js"></script>
      <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/components/popup.min.js"></script>
      <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/components/modal.js"></script>
      <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/components/dropdown.js"></script>
-     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-     <script src="http://cdn.bootcss.com/blueimp-md5/1.1.0/js/md5.js"></script>
-     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+     <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/components/dimmer.js"></script>
      <script type="text/javascript" src=<?php echo plugins_url('js/hoafunctions.js',__FILE__) ?>></script>
      
     <?php
@@ -170,22 +275,7 @@ function hoa_setting_up_scripts() {
    
 </div>
 
-<!--call page-->
-<div id="hoa_page_1"class="ui longe modal">
-  <i class="close icon"></i>
-  <div class="header">
-     HOA PhoneNumber  571-234-1532
-  </div>
-  <div class="content">
-      HOA will help you to manage your Home.
 
-  </div>
-  <div class="actions">
-    <div class="ui positive right button">
-      Confirm
-    </div>
-  </div>
-</div>
 
 
 <!--login page-->
@@ -242,7 +332,7 @@ function hoa_setting_up_scripts() {
     
     <?php
  }
- add_action('wp','add_hoa_content');
+// add_action('wp','add_hoa_content');
 
 
 

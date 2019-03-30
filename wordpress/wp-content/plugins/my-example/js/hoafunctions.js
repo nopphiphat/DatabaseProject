@@ -1,18 +1,13 @@
 
-var constants = {
-  website:"https://localhost:8443/",
-  mainsite:"",
-  login_status:true,
-  username:'',
-  password:'',
-  email_form:false,
-};
-
+var plugin_name = "my-example";
+var html_file = "wp-content/plugins/"+plugin_name+"/html/";
+var php_file = "wp-content/plugins/"+plugin_name+"/";
 
 function Hoa_phone_button(){
-  $('#hoa_page_1')
-  .modal('show');
-  console.log("work1!");
+$('#hoa_insert').load(html_file+'hoa_phone.html');
+$('#hoa_page_1')
+.modal('show');
+console.log("work1!");
 }
 
 
@@ -27,32 +22,6 @@ function Hoa_chart_button(){
     $('#hoa_page_2')
     .modal('show');
   }
-}
-
-function Hoa_login_page_login(){
-  $('hoa_page_1')
-  .modal('show');
-  constants.username = $('#hoa_username').val();
-  constants.password = md5($('#hoa_password').val());
-  console.log(constants.password);
-
-  //send username and password to back-end
-  axios.get(constants.website+'hoa_login',{
-    params:{
-      username:constants.username,
-      password:constants.password,
-    }
-  }
-  )//.then(function(response){
-    //constants.login_status = response.data.login_status;
-  //})
-
-  if(constants.login_status){
-      user_login_email();
-  }else{
-    login_faile();
-  }
-
 }
 
 function user_login_email(){
@@ -88,36 +57,11 @@ function user_login_email(){
   </div>';
   var insertDiv = document.getElementById("hoa_insert");
   insertDiv.innerHTML = html_str;
-
-  $('#hoa_email_form')
-  .modal('show');
-  $('.menu .item')
-  .tab();
-  constants.email_form = true;
+  $('#tab_one_form').load(html_file+'hoa_email_form.html');
+  $('#hoa_email_form').modal('show');
+  $('.menu .item').tab();
+ 
   
-}
-
-function login_faile(){
-  var html_str = '\
-  <div id="hoa_page_failed"class="ui mini modal">\
-    <i class="close icon"></i>\
-      <div class="header">\
-        HOA Login\
-      </div>\
-    <div class="content">\
-      Sorry, you login failed.\
-    </div>\
-    <div class="actions">\
-      <div class="ui positive right button">\
-        Confirm\
-      </div>\
-    </div>\
-  </div>';
-  var insertDiv = document.getElementById("hoa_insert");
-  insertDiv.innerHTML = html_str;
-  $('#hoa_page_failed')
-  .modal('show');
-
 }
 
 //MD5js
@@ -147,8 +91,15 @@ function HOA_Send_Mail(){
   hoa_form.hoa_c_country=$('#hoa_c_country').val();
   hoa_form.hoa_c_community=$('#hoa_c_community').val();
   hoa_form.hoa_c_email_content=$('#hoa_c_email_content').val();
+  var hoa_test=$('#hoa_c_first_name').val();
 
   alert("Email has been sent.");
   console.log(hoa_form);
-  axios.post(constants.website+'hoa_c_send_email',hoa_form);
+  $.ajax({
+    url:php_file+"hoa_varible.php",
+    method:"POST",
+    data:{"hoa_request_form":hoa_form}
+  }).done(function( msg ) {
+    console.log(msg);
+  });
 }
