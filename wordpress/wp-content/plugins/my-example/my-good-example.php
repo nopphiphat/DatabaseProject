@@ -211,13 +211,19 @@ class hoa_widget extends WP_Widget {
    }
 //build the widget settings form
    function form($instance) {
-      $defaults = array('title' => 'Homeowner Assistant', 'movie' => '', 'song' => '', 'hoa_content'=> '');
+      $defaults = array('title' => 'Homeowner Assistant', 'hoa_phone'=>'','hoa_email'=>'','hoa_content'=> '');
       $instance = wp_parse_args((array) $instance, $defaults );
       $title = $instance['title'];
+      $hoa_phone = $instance['hoa_phone'];
+      $hoa_email = $instance['hoa_email'];
       $hoa_content = $instance['hoa_content'];
       ?>
       <p>Title:<input class=”widefat” name="<?php echo $this->get_field_name('title');?>" 
          type="text" value="<?php echo esc_attr($title);?>"/></p>
+      <p>Phone:<input class=”widefat” name="<?php echo $this->get_field_name('hoa_phone');?>" 
+         type="text" value="<?php echo esc_attr($hoa_phone);?>"/></p>
+      <p>Email:<input class=”widefat” name="<?php echo $this->get_field_name('hoa_email');?>" 
+         type="text" value="<?php echo esc_attr($hoa_email);?>"/></p>
       <p>Content in HOA Widget:<textarea class="widefat" name="<?php echo $this-> get_field_name('hoa_content');?>"
          value="<?php echo esc_attr($hoa_content);?>"></textarea></p>
       <?php
@@ -228,6 +234,8 @@ class hoa_widget extends WP_Widget {
       $instance = $old_instance;
       $instance['title'] = strip_tags( $new_instance['title'] );
       $instance['hoa_content'] = strip_tags( $new_instance['hoa_content'] );
+      $instance['hoa_phone'] = strip_tags( $new_instance['hoa_phone'] );
+      $instance['hoa_email'] = strip_tags( $new_instance['hoa_email'] );
       return $instance;
    }
 
@@ -239,16 +247,19 @@ class hoa_widget extends WP_Widget {
       $user_role = get_option('hoa_user_role');
       $title = apply_filters('widget_title', $instance['title']);
       $php_content = empty($instance['hoa_content'] )?'& nbsp;':$instance['hoa_content'];
+      $hoa_phone = empty($instance['hoa_phone'] )?'& nbsp;':$instance['hoa_phone'];
+      $hoa_email = empty($instance['hoa_email'] )?'& nbsp;':$instance['hoa_email'];
 
       if (!empty($title) ) { echo $before_title . $title . $after_title; };
          echo '<p> HI ' . $user_name . '</p>';
          echo '<p> You are one of '. $user_role . 's in our community.</p>';
-         echo '<p> '. $this->$php_content . '</p>';
+         echo '<p> '. $php_content . '</p>';
          echo $after_widget;
-      if($user_role=='homeowner'){$this->hoa_homeowner();}
-      elseif($user_role=='Board of Directors Member'||$user_role=='Board of Directors President'){$this->hoa_board_member();}
+      if($user_role=='homeowner'){$this->hoa_homeowner($hoa_phone,$hoa_email);}
+      elseif($user_role=='Board of Directors Member'||$user_role=='Board of Directors President'){$this->hoa_board_member($hoa_phone,$hoa_email);}
       elseif($user_role=='Property Manager Employee'){$this->hoa_property_employee();}
       elseif($user_role=='Property Manager Supervisor'){$this->hoa_property_supervisor();}
+      else{$this->hoa_homeowner($hoa_phone,$hoa_email);}
       //else{$this->hoa_property_manager_employee();}
       
    }
@@ -386,6 +397,7 @@ class hoa_widget extends WP_Widget {
       </form>
       
       
+      
       </div>
       <div class="actions">
       <div class="ui positive right button" onclick=HOA_Send_Mail()>
@@ -448,7 +460,7 @@ class hoa_widget extends WP_Widget {
    }
 
 
-   function hoa_board_member(){
+   function hoa_board_member($hoa_phone,$hoa_email){
 
          ?>
          <div id="hoa_insert_place"></div>
@@ -456,10 +468,12 @@ class hoa_widget extends WP_Widget {
          <div id="hoa_page_1" class="ui longe modal">
                <i class="close icon"></i>
             <div class="header">
-               HOA PhoneNumber  571-234-1532
+               Homeowner Assitant
             </div>
             <div class="content">
-               HOA will help you to manage your Home.
+               <p>HOA will help you to manage your Home.</p>
+               <p>HOA PHONE: <?php echo $hoa_phone;?></p>
+               <p>HOA EMAIL: <?php echo $hoa_email;?></p>
             </div>
             <div class="actions">
                <div class="ui positive right button">
@@ -485,7 +499,7 @@ class hoa_widget extends WP_Widget {
                </div>
 
 
-               <div class="ui animated button" tabindex="0" onclick=Hoa_board_chart_button_()>
+               <div class="ui animated button" tabindex="0" onclick=Hoa_board_chart_button()>
                   <div class="hidden content">Chart</div>
                   <div class="visible content">
                   <i class="chart area icon"></i>
@@ -496,17 +510,19 @@ class hoa_widget extends WP_Widget {
    }
 
    //show for homeowner only
-   function hoa_homeowner(){
+   function hoa_homeowner($hoa_phone,$hoa_email){
          //test
          ?>
          <div id="hoa_insert_place"></div>
             <div id="hoa_page_1" class="ui longe modal">
                <i class="close icon"></i>
             <div class="header">
-               HOA PhoneNumber  571-234-1532
+               Homeowner Assitant
             </div>
             <div class="content">
-               HOA will help you to manage your Home.
+               <p>HOA will help you to manage your Home.</p>
+               <p>HOA PHONE: <?php echo $hoa_phone;?></p>
+               <p>HOA EMAIL: <?php echo $hoa_email;?></p>
             </div>
             <div class="actions">
                <div class="ui positive right button">
@@ -585,6 +601,71 @@ class hoa_widget extends WP_Widget {
  }
  add_shortcode('example','my_good_example_function');
 
+
+
+ //Create DB
+ function init_db(){
+   global $wpdb;
+   #$Request_table_name = $wpdb->prefix .$plugin_db_prefix. "Request";
+   $Request_table_name = $wpdb->prefix . "hoa_request";
+   $Action_table_name = $wpdb->prefix . "hoa_action";
+   
+   #get charset
+   $charset_collate = $wpdb->get_charset_collate();
+   /*$sql = "CREATE TABLE $table_name (
+     id mediumint(9) NOT NULL AUTO_INCREMENT,
+     time datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
+     name tinytext NOT NULL,
+     text text NOT NULL,
+     url varchar(55) DEFAULT '' NOT NULL,
+     PRIMARY KEY  (id)
+  ) $charset_collate;";*/
+  
+  $sqlRequest = "CREATE TABLE ". $Request_table_name . " (
+   Tracking_No VARCHAR(30) NOT NULL,
+   Request_Title VARCHAR(100) NOT NULL,
+   Request_Method VARCHAR(10) NOT NULL,
+   HO_First_Name VARCHAR(30) NOT NULL,
+   HO_Last_Name VARCHAR(30) NOT NULL,
+   HO_Email VARCHAR(40) NOT NULL,
+   HO_Phone INTEGER NOT NULL,
+   HO_Address VARCHAR(100) NOT NULL,
+   Record_Employee_First_Name VARCHAR(30) NOT NULL,
+   Record_Employee_Last_Name VARCHAR(30) NOT NULL,
+   Company_Name VARCHAR(50) NOT NULL,
+   Record_Time TIMESTAMP NOT NULL,
+   Request_Status INTEGER NOT NULL,
+   Status_Time TIMESTAMP NOT NULL,
+   Due_Time TIMESTAMP NOT NULL,
+   Review_Time TIMESTAMP DEFAULT NULL,
+   Request_Review FLOAT NOT NULL,
+   PRIMARY KEY (Tracking_No)
+  ) " .$charset_collate. ";";
+  $sqlAction = "CREATE TABLE ". $Action_table_name . " (
+   Action_ID VARCHAR(30) NOT NULL,
+   Service_Type VARCHAR(100) NOT NULL,
+   Assigned_Emp_First_Name VARCHAR(30) NOT NULL,
+   Assigned_Emp_Last_Name VARCHAR(30) NOT NULL,
+   Assigned_Emp_Phone INTEGER NOT NULL,
+   Action_Status VARCHAR(20) NOT NULL,
+   Start_Time DATETIME NOT NULL,
+   End_Time TIMESTAMP DEFAULT NULL,
+   Due_Time TIMESTAMP NOT NULL,
+   Final_Edit_Time TIMESTAMP NOT NULL,
+   Tracking_No VARCHAR(30) NOT NULL,
+   PRIMARY KEY (Action_ID)
+  ) ".$charset_collate.";";
+  require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
+  dbDelta( $sqlRequest );
+  dbDelta( $sqlAction );
+}
+//set default option
+register_activation_hook(__FILE__,'init_db');
+
+//init database
+
+//deaction
+//register_deactivation_hook($file,$function);
  
 
  //track the script in the path

@@ -19,18 +19,14 @@ function Hoa_email_button(){
     <div class="content">\
       <div class="ui top attached tabular menu">\
       <a class="item active"" data-tab="Request">Request</a>\
-      <a class="item" data-tab="Information_Box">Message Box</a>\
       <a class="item" data-tab="User_Request">Your Requests</a>\
     </div>\
     <div id="tab_one_form" class="ui bottom attached tab segment active" data-tab="Request">\
       <!--Form-->\
       \
     </div>\
-    <div class="ui bottom attached tab segment" data-tab="Information_Box">\
-      Second\
-    </div>\
     <div class="ui bottom attached tab segment" data-tab="User_Request">\
-      Third\
+      Second\
     </div>\
     </div>\
     <div class="actions">\
@@ -104,18 +100,14 @@ function Hoa_board_email_button(){
     <div class="content">\
       <div class="ui top attached tabular menu">\
       <a class="item active"" data-tab="Request">Request</a>\
-      <a class="item" data-tab="Information_Box">Message Box</a>\
       <a class="item" data-tab="User_Request">Your Requests</a>\
     </div>\
     <div id="tab_one_form" class="ui bottom attached tab segment active" data-tab="Request">\
       <!--Form-->\
       \
     </div>\
-    <div class="ui bottom attached tab segment" data-tab="Information_Box">\
-      Second\
-    </div>\
     <div class="ui bottom attached tab segment" data-tab="User_Request">\
-      Third\
+      Second\
     </div>\
     </div>\
     <div class="actions">\
@@ -198,18 +190,14 @@ function Hoa_property_employee_box_button(){
     <div class="content">\
       <div class="ui top attached tabular menu">\
       <a class="item active"" data-tab="Request_Box">Request Box</a>\
-      <a class="item" data-tab="Information_Box">Message Box</a>\
       <a class="item" data-tab="User_Request">Your Requests</a>\
     </div>\
     <div id="tab_one_form" class="ui bottom attached tab segment active" data-tab="Request_Box">\
       <!--Form-->\
       \
     </div>\
-    <div class="ui bottom attached tab segment" data-tab="Information_Box">\
-      Second\
-    </div>\
     <div class="ui bottom attached tab segment" data-tab="User_Request">\
-      Third\
+      Second\
     </div>\
     </div>\
     <div class="actions">\
