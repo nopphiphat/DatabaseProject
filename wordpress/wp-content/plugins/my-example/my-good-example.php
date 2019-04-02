@@ -5,6 +5,8 @@
  */
 
 
+include "my_setting.php";
+
 /*
 Get Current User information
 */
@@ -603,12 +605,15 @@ class hoa_widget extends WP_Widget {
 
 
 
- //Create DB
+
+ 
+ 
  function init_db(){
    global $wpdb;
    #$Request_table_name = $wpdb->prefix .$plugin_db_prefix. "Request";
    $Request_table_name = $wpdb->prefix . "hoa_request";
-   $Action_table_name = $wpdb->prefix . "hoa_action";
+   $Action_table_name = $wpdb->prefix . "action";
+   $Work_table_name = $wpdb->prefix . "work";
    
    #get charset
    $charset_collate = $wpdb->get_charset_collate();
@@ -620,50 +625,85 @@ class hoa_widget extends WP_Widget {
      url varchar(55) DEFAULT '' NOT NULL,
      PRIMARY KEY  (id)
   ) $charset_collate;";*/
+  $sqlRequest = "CREATE TABLE IF NOT EXISTS ". $Request_table_name . " (
+ `Tracking_No` VARCHAR(30) NOT NULL,
+ `Request_Title` VARCHAR(100) NOT NULL,
+ `Request_Description` VARCHAR(200) NOT NULL,
+ `Request_Method` VARCHAR(40) NOT NULL,
+ `Request_users_ID` BIGINT(20) UNSIGNED,
+ `Record_Employee_ID` INT NULL,
+ `Record_Time` TIMESTAMP NOT NULL,
+ `Request_Status` INT(11) NOT NULL,
+ `Status_Time` TIMESTAMP NOT NULL,
+ `Due_Time` TIMESTAMP NOT NULL,
+ `Request_Rating` FLOAT NOT NULL,
+ `Rating_time` TIMESTAMP NULL DEFAULT NULL,
+ PRIMARY KEY (`Tracking_No`),
+ INDEX `fk_h_hoa_request_h_users1_idx` (`Request_users_ID` ASC),
+ CONSTRAINT `fk_h_hoa_request_h_users1`
+   FOREIGN KEY (`Request_users_ID`)
+   REFERENCES `db_project`.`h_users` (`ID`)
+   ON DELETE NO ACTION
+   ON UPDATE NO ACTION)
+   ENGINE = InnoDB;";
   
-  $sqlRequest = "CREATE TABLE ". $Request_table_name . " (
-   Tracking_No VARCHAR(30) NOT NULL,
-   Request_Title VARCHAR(100) NOT NULL,
-   Request_Method VARCHAR(10) NOT NULL,
-   HO_First_Name VARCHAR(30) NOT NULL,
-   HO_Last_Name VARCHAR(30) NOT NULL,
-   HO_Email VARCHAR(40) NOT NULL,
-   HO_Phone INTEGER NOT NULL,
-   HO_Address VARCHAR(100) NOT NULL,
-   Record_Employee_First_Name VARCHAR(30) NOT NULL,
-   Record_Employee_Last_Name VARCHAR(30) NOT NULL,
-   Company_Name VARCHAR(50) NOT NULL,
-   Record_Time TIMESTAMP NOT NULL,
-   Request_Status INTEGER NOT NULL,
-   Status_Time TIMESTAMP NOT NULL,
-   Due_Time TIMESTAMP NOT NULL,
-   Review_Time TIMESTAMP DEFAULT NULL,
-   Request_Review FLOAT NOT NULL,
-   PRIMARY KEY (Tracking_No)
-  ) " .$charset_collate. ";";
-  $sqlAction = "CREATE TABLE ". $Action_table_name . " (
-   Action_ID VARCHAR(30) NOT NULL,
-   Service_Type VARCHAR(100) NOT NULL,
-   Assigned_Emp_First_Name VARCHAR(30) NOT NULL,
-   Assigned_Emp_Last_Name VARCHAR(30) NOT NULL,
-   Assigned_Emp_Phone INTEGER NOT NULL,
-   Action_Status VARCHAR(20) NOT NULL,
-   Start_Time DATETIME NOT NULL,
-   End_Time TIMESTAMP DEFAULT NULL,
-   Due_Time TIMESTAMP NOT NULL,
-   Final_Edit_Time TIMESTAMP NOT NULL,
-   Tracking_No VARCHAR(30) NOT NULL,
-   PRIMARY KEY (Action_ID)
-  ) ".$charset_collate.";";
+  
+  $sqlAction = "CREATE TABLE IF NOT EXISTS ". $Action_table_name . " (
+ `Action_ID` INT NOT NULL,
+ `Tracking_No` VARCHAR(30) NOT NULL,
+ `Assignee_ID` BIGINT(20) UNSIGNED NOT NULL,
+ `Action_Description` VARCHAR(200) NOT NULL,
+ `Start_Time` TIMESTAMP NOT NULL,
+ `Action_Status` INT NOT NULL,
+ `Status_Time` TIMESTAMP NOT NULL,
+ `Due_Time` TIMESTAMP NOT NULL,
+ PRIMARY KEY (`Action_ID`, `Tracking_No`, `Assignee_ID`),
+ INDEX `fk_h_actiion_h_hoa_request_idx` (`Tracking_No` ASC),
+ INDEX `fk_h_actiion_h_users1_idx` (`Assignee_ID` ASC),
+ CONSTRAINT `fk_h_actiion_h_hoa_request`
+   FOREIGN KEY (`Tracking_No`)
+   REFERENCES `db_project`.`h_hoa_request` (`Tracking_No`)
+   ON DELETE NO ACTION
+   ON UPDATE NO ACTION,
+ CONSTRAINT `fk_h_actiion_h_users1`
+   FOREIGN KEY (`Assignee_ID`)
+   REFERENCES `db_project`.`h_users` (`ID`)
+   ON DELETE NO ACTION
+   ON UPDATE NO ACTION)
+   ENGINE = InnoDB;";
+  
+  
+  $sqlWork = "CREATE TABLE IF NOT EXISTS ".$Work_table_name." (
+ `Work_User_ID` BIGINT(20) UNSIGNED NOT NULL,
+ `Action_ID` INT NOT NULL,
+ `Work_Description` VARCHAR(200) NOT NULL,
+ `Record_Time` TIMESTAMP NOT NULL,
+ PRIMARY KEY (`Work_User_ID`, `Action_ID`),
+ INDEX `fk_Work_h_actiion1_idx` (`Action_ID` ASC),
+ INDEX `fk_Work_h_users1_idx` (`Work_User_ID` ASC),
+ CONSTRAINT `fk_Work_h_actiion1`
+   FOREIGN KEY (`Action_ID`)
+   REFERENCES `db_project`.`h_action` (`Action_ID`)
+   ON DELETE NO ACTION
+   ON UPDATE NO ACTION,
+ CONSTRAINT `fk_Work_h_users1`
+   FOREIGN KEY (`Work_User_ID`)
+   REFERENCES `db_project`.`h_users` (`ID`)
+   ON DELETE NO ACTION
+   ON UPDATE NO ACTION)
+ENGINE = InnoDB;";
   require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
   dbDelta( $sqlRequest );
   dbDelta( $sqlAction );
+  dbDelta( $sqlWork );
 }
 //set default option
 register_activation_hook(__FILE__,'init_db');
 
 //init database
 
+//deaction
+//register_deactivation_hook($file,$function);
 //deaction
 //register_deactivation_hook($file,$function);
  
