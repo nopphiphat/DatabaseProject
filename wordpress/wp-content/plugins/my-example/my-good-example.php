@@ -513,6 +513,7 @@ class hoa_widget extends WP_Widget {
 
    //show for homeowner only
    function hoa_homeowner($hoa_phone,$hoa_email){
+         $the_id=get_option('hoa_user_id') 
          //test
          ?>
          <div id="hoa_insert_place"></div>
@@ -528,7 +529,7 @@ class hoa_widget extends WP_Widget {
             </div>
             <div class="actions">
                <div class="ui positive right button">
-                  Confirm
+                  Confirm$the_id=get_option('hoa_user_id') 
                </div>
             </div>
             </div>
@@ -542,7 +543,7 @@ class hoa_widget extends WP_Widget {
                </div>
                </div>
             
-               <div class="ui animated button" tabindex="0" onclick=Hoa_email_button()>
+               <div class="ui animated button" tabindex="0" onclick=Hoa_email_button(<?php echo $the_id; ?>)>
                   <div class="hidden content">Mail</div>
                   <div class="visible content">
                   <i class="envelope icon"></i>
@@ -577,7 +578,10 @@ class hoa_widget extends WP_Widget {
      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/components/popup.min.css"/>
      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/components/modal.css"/>
      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/components/dimmer.css"/>
+     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/components/accordion.css"/>
+     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/components/rating.css"/>
 
+     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
      <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.js"></script>
      <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/components/popup.js"></script>
@@ -585,6 +589,8 @@ class hoa_widget extends WP_Widget {
      <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/components/modal.js"></script>
      <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/components/dropdown.js"></script>
      <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/components/dimmer.js"></script>
+     <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/components/accordion.js"></script>
+     <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/components/rating.js"></script>
      <script type="text/javascript" src=<?php echo plugins_url('js/hoafunctions.js',__FILE__) ?>></script>
      
     <?php
@@ -611,9 +617,9 @@ class hoa_widget extends WP_Widget {
  function init_db(){
    global $wpdb;
    #$Request_table_name = $wpdb->prefix .$plugin_db_prefix. "Request";
-   $Request_table_name = $wpdb->prefix . "hoa_request";
-   $Action_table_name = $wpdb->prefix . "action";
-   $Work_table_name = $wpdb->prefix . "work";
+   $Request_table_name = "HOA_REQUEST";
+   $Action_table_name = "HOA_ACTION";
+   $Work_table_name = "HOA_WORK";
    
    #get charset
    $charset_collate = $wpdb->get_charset_collate();
@@ -625,73 +631,61 @@ class hoa_widget extends WP_Widget {
      url varchar(55) DEFAULT '' NOT NULL,
      PRIMARY KEY  (id)
   ) $charset_collate;";*/
-  $sqlRequest = "CREATE TABLE IF NOT EXISTS ". $Request_table_name . " (
- `Tracking_No` VARCHAR(30) NOT NULL,
- `Request_Title` VARCHAR(100) NOT NULL,
- `Request_Description` VARCHAR(200) NOT NULL,
- `Request_Method` VARCHAR(40) NOT NULL,
- `Request_users_ID` BIGINT(20) UNSIGNED,
- `Record_Employee_ID` INT NULL,
- `Record_Time` TIMESTAMP NOT NULL,
- `Request_Status` INT(11) NOT NULL,
- `Status_Time` TIMESTAMP NOT NULL,
- `Due_Time` TIMESTAMP NOT NULL,
- `Request_Rating` FLOAT NOT NULL,
- `Rating_time` TIMESTAMP NULL DEFAULT NULL,
- PRIMARY KEY (`Tracking_No`),
- INDEX `fk_h_hoa_request_h_users1_idx` (`Request_users_ID` ASC),
- CONSTRAINT `fk_h_hoa_request_h_users1`
-   FOREIGN KEY (`Request_users_ID`)
-   REFERENCES `db_project`.`h_users` (`ID`)
-   ON DELETE NO ACTION
-   ON UPDATE NO ACTION)
-   ENGINE = InnoDB;";
+  $sqlRequest = "CREATE TABLE IF NOT EXISTS". $Request_table_name . " (
+   `Request_ID` INT NOT NULL AUTO_INCREMENT,
+   `Request_Title` VARCHAR(100) NOT NULL,
+   `Request_Description` VARCHAR(200) NOT NULL,
+   `Request_Method` VARCHAR(40) NOT NULL,
+   `Request_Users_ID` BIGINT(20) NULL,
+   `Record_Employee_ID` BIGINT(20) NULL,
+   `Record_Time` TIMESTAMP NOT NULL,
+   `Request_Handler_ID` BIGINT(20) NOT NULL,
+   `Request_Status` INT(11) NOT NULL,
+   `Status_Time` TIMESTAMP NOT NULL,
+   `Due_Time` TIMESTAMP NOT NULL,
+   `Request_Rating` FLOAT NOT NULL,
+   `Rating_time` TIMESTAMP NULL DEFAULT NULL,
+   PRIMARY KEY (`Request_ID`))";
   
   
   $sqlAction = "CREATE TABLE IF NOT EXISTS ". $Action_table_name . " (
- `Action_ID` INT NOT NULL,
- `Tracking_No` VARCHAR(30) NOT NULL,
- `Assignee_ID` BIGINT(20) UNSIGNED NOT NULL,
- `Action_Description` VARCHAR(200) NOT NULL,
- `Start_Time` TIMESTAMP NOT NULL,
- `Action_Status` INT NOT NULL,
- `Status_Time` TIMESTAMP NOT NULL,
- `Due_Time` TIMESTAMP NOT NULL,
- PRIMARY KEY (`Action_ID`, `Tracking_No`, `Assignee_ID`),
- INDEX `fk_h_actiion_h_hoa_request_idx` (`Tracking_No` ASC),
- INDEX `fk_h_actiion_h_users1_idx` (`Assignee_ID` ASC),
- CONSTRAINT `fk_h_actiion_h_hoa_request`
-   FOREIGN KEY (`Tracking_No`)
-   REFERENCES `db_project`.`h_hoa_request` (`Tracking_No`)
-   ON DELETE NO ACTION
-   ON UPDATE NO ACTION,
- CONSTRAINT `fk_h_actiion_h_users1`
-   FOREIGN KEY (`Assignee_ID`)
-   REFERENCES `db_project`.`h_users` (`ID`)
-   ON DELETE NO ACTION
-   ON UPDATE NO ACTION)
-   ENGINE = InnoDB;";
+   `Action_ID` INT NOT NULL AUTO_INCREMENT,
+   `Request_ID` INT NOT NULL,
+   `Assignee_ID` BIGINT(20) UNSIGNED NOT NULL,
+   `Action_Description` VARCHAR(200) NOT NULL,
+   `Start_Time` TIMESTAMP NOT NULL,
+   `Action_Status` INT NOT NULL,
+   `Status_Time` TIMESTAMP NOT NULL,
+   `Due_Time` TIMESTAMP NOT NULL,
+   PRIMARY KEY (`Action_ID`, `Request_ID`, `Assignee_ID`),
+   CONSTRAINT `fk_h_actiion_h_hoa_request`
+     FOREIGN KEY (`Request_ID`)
+     REFERENCES `HOA_REQUEST` (`Request_ID`)
+     ON DELETE NO ACTION
+     ON UPDATE NO ACTION,
+   CONSTRAINT `fk_h_actiion_h_users1`
+     FOREIGN KEY (`Assignee_ID`)
+     REFERENCES `h_users` (`ID`)
+     ON DELETE NO ACTION
+     ON UPDATE NO ACTION)";
   
   
-  $sqlWork = "CREATE TABLE IF NOT EXISTS ".$Work_table_name." (
- `Work_User_ID` BIGINT(20) UNSIGNED NOT NULL,
- `Action_ID` INT NOT NULL,
- `Work_Description` VARCHAR(200) NOT NULL,
- `Record_Time` TIMESTAMP NOT NULL,
- PRIMARY KEY (`Work_User_ID`, `Action_ID`),
- INDEX `fk_Work_h_actiion1_idx` (`Action_ID` ASC),
- INDEX `fk_Work_h_users1_idx` (`Work_User_ID` ASC),
- CONSTRAINT `fk_Work_h_actiion1`
-   FOREIGN KEY (`Action_ID`)
-   REFERENCES `db_project`.`h_action` (`Action_ID`)
-   ON DELETE NO ACTION
-   ON UPDATE NO ACTION,
- CONSTRAINT `fk_Work_h_users1`
-   FOREIGN KEY (`Work_User_ID`)
-   REFERENCES `db_project`.`h_users` (`ID`)
-   ON DELETE NO ACTION
-   ON UPDATE NO ACTION)
-ENGINE = InnoDB;";
+  $sqlWork = "CREATE TABLE IF NOT EXISTS ".$Work_table_name."   (
+   `Work_User_ID` BIGINT(20) UNSIGNED NOT NULL,
+   `Action_ID` INT NOT NULL,
+   `Work_Description` VARCHAR(200) NOT NULL,
+   `Record_Time` TIMESTAMP NOT NULL,
+   PRIMARY KEY (`Work_User_ID`, `Action_ID`),
+   CONSTRAINT `fk_Work_h_action1`
+     FOREIGN KEY (`Action_ID`)
+     REFERENCES `HOA_ACTION` (`Action_ID`)
+     ON DELETE NO ACTION
+     ON UPDATE NO ACTION,
+   CONSTRAINT `fk_Work_h_users1`
+     FOREIGN KEY (`Work_User_ID`)
+     REFERENCES `h_users` (`ID`)
+     ON DELETE NO ACTION
+     ON UPDATE NO ACTION)";
   require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
   dbDelta( $sqlRequest );
   dbDelta( $sqlAction );
