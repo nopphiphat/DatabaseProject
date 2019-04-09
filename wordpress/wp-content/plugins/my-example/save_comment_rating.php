@@ -18,6 +18,6 @@ $formats_where = array('%d');
 
 //$string_sql="UPDATE `HOA_REQUEST` SET `Request_Rating` = '"+$comment_form['rate']+"' WHERE (`Request_ID` = '"+$comment_form["request_id"]+"')";
 
-$wpdb->update('HOA_REQUEST',$values,$where,$formates_values,$formats_where);
+$wpdb->update($wpdb->prefix.'HOA_REQUEST',$values,$where,$formates_values,$formats_where);
 
 ?>

@@ -381,7 +381,7 @@ function Hoa_add_request_button(user_id){
   /**
    * A modal, each item can submit a form to add action.
    */
-
+  console.log(user_id);
   user_ID = user_id;
   var items = hoa_get_all_items();
   if($("#hoa_add_request_page").length){
@@ -592,7 +592,7 @@ function Hoa_property_employee_box_button(user_id){
   var action_items = hoa_check_actions(user_ID);
   if($("#employee_box").length){
     var insertDiv = document.getElementById("tab_one_form");
-    insertDiv.innerHTML = items;
+    insertDiv.innerHTML = action_items;
   }else{
   
     var html_str = '\

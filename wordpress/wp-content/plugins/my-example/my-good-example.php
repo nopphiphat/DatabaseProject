@@ -481,86 +481,111 @@ class hoa_widget extends WP_Widget {
 
  
  
+ 
  function init_db(){
    global $wpdb;
    #$Request_table_name = $wpdb->prefix .$plugin_db_prefix. "Request";
-   $Request_table_name = "HOA_REQUEST";
-   $Action_table_name = "HOA_ACTION";
-   $Work_table_name = "HOA_WORK";
+   $User_table_name = $wpdb->prefix."users";
+   $Request_table_name = $wpdb->prefix . "HOA_REQUEST";
+   $Action_table_name = $wpdb->prefix . "HOA_ACTION";
+   $Work_table_name = $wpdb->prefix . "HOA_WORK";
    
    #get charset
    $charset_collate = $wpdb->get_charset_collate();
-   /*$sql = "CREATE TABLE $table_name (
-     id mediumint(9) NOT NULL AUTO_INCREMENT,
-     time datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
-     name tinytext NOT NULL,
-     text text NOT NULL,
-     url varchar(55) DEFAULT '' NOT NULL,
-     PRIMARY KEY  (id)
-  ) $charset_collate;";*/
-  $sqlRequest = "CREATE TABLE IF NOT EXISTS". $Request_table_name . " (
-   `Request_ID` INT NOT NULL AUTO_INCREMENT,
-   `Request_Title` VARCHAR(100) NOT NULL,
-   `Request_Description` VARCHAR(200) NOT NULL,
-   `Request_Method` VARCHAR(40) NOT NULL,
-   `Request_Users_ID` BIGINT(20) NULL,
-   `Record_Employee_ID` BIGINT(20) NULL,
-   `Record_Time` TIMESTAMP NOT NULL,
-   `Request_Handler_ID` BIGINT(20) NOT NULL,
-   `Request_Status` INT(11) NOT NULL,
-   `Status_Time` TIMESTAMP NOT NULL,
-   `Due_Time` TIMESTAMP NOT NULL,
-   `Request_Rating` FLOAT NOT NULL,
-   `Rating_time` TIMESTAMP NULL DEFAULT NULL,
-   PRIMARY KEY (`Request_ID`))";
+  /*$sqlUser = "CREATE TABLE IF NOT EXISTS ".$User_table_name." (
+ `ID` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+ `user_login` VARCHAR(60) NOT NULL DEFAULT '',
+ `user_pass` VARCHAR(255) NOT NULL DEFAULT '',
+ `user_nicename` VARCHAR(50) NOT NULL DEFAULT '',
+ `user_email` VARCHAR(100) NOT NULL DEFAULT '',
+ `user_url` VARCHAR(100) NOT NULL DEFAULT '',
+ `user_registered` DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',
+ `user_activation_key` VARCHAR(255) NOT NULL DEFAULT '',
+ `user_status` INT(11) NOT NULL DEFAULT '0',
+ `display_name` VARCHAR(250) NOT NULL DEFAULT '',
+ PRIMARY KEY (`ID`),
+ INDEX `user_login_key` (`user_login` ASC) ,
+ INDEX `user_nicename` (`user_nicename` ASC) ,
+ INDEX `user_email` (`user_email` ASC) )
+ENGINE = InnoDB
+AUTO_INCREMENT = 8
+DEFAULT CHARACTER SET = utf8mb4
+COLLATE = utf8mb4_unicode_520_ci;";*/
+  $sqlUser ="ALTER TABLE ".$User_table_name." ADD INDEX `user_login_key` (`user_login` ASC);
+ALTER TABLE ".$User_table_name." ADD INDEX `user_nicename` (`user_nicename` ASC);
+ALTER TABLE ".$User_table_name." ADD INDEX `user_email` (`user_email` ASC);";
+  
+  $sqlRequest = "CREATE TABLE IF NOT EXISTS ". $Request_table_name . " (
+ `Request_ID` INT NOT NULL AUTO_INCREMENT,
+ `Request_Title` VARCHAR(100) NOT NULL,
+ `Request_Description` VARCHAR(200) NOT NULL,
+ `Request_Method` VARCHAR(40) NOT NULL,
+ `Request_Users_ID` BIGINT(20) NULL,
+ `Record_Employee_ID` BIGINT(20) NULL,
+ `Record_Time` TIMESTAMP NOT NULL,
+ `Request_Handler_ID` BIGINT(20) NOT NULL,
+ `Request_Status` INT(11) NOT NULL,
+ `Status_Time` TIMESTAMP NOT NULL,
+ `Due_Time` TIMESTAMP NULL DEFAULT NULL,
+ `Request_Rating` FLOAT NULL DEFAULT NULL,
+ `Rating_time` TIMESTAMP NULL DEFAULT NULL,
+ PRIMARY KEY (`Request_ID`),
+ INDEX Request_Users_ID ( `Request_Users_ID` ))
+ENGINE = InnoDB;";
   
   
   $sqlAction = "CREATE TABLE IF NOT EXISTS ". $Action_table_name . " (
-   `Action_ID` INT NOT NULL AUTO_INCREMENT,
-   `Request_ID` INT NOT NULL,
-   `Assignee_ID` BIGINT(20) UNSIGNED NOT NULL,
-   `Action_Description` VARCHAR(200) NOT NULL,
-   `Start_Time` TIMESTAMP NOT NULL,
-   `Action_Status` INT NOT NULL,
-   `Status_Time` TIMESTAMP NOT NULL,
-   `Due_Time` TIMESTAMP NOT NULL,
-   PRIMARY KEY (`Action_ID`, `Request_ID`, `Assignee_ID`),
-   CONSTRAINT `fk_h_actiion_h_hoa_request`
-     FOREIGN KEY (`Request_ID`)
-     REFERENCES `HOA_REQUEST` (`Request_ID`)
-     ON DELETE NO ACTION
-     ON UPDATE NO ACTION,
-   CONSTRAINT `fk_h_actiion_h_users1`
-     FOREIGN KEY (`Assignee_ID`)
-     REFERENCES `h_users` (`ID`)
-     ON DELETE NO ACTION
-     ON UPDATE NO ACTION)";
+ `Action_ID` INT NOT NULL AUTO_INCREMENT,
+ `Request_ID` INT NOT NULL,
+ `Assignee_ID` BIGINT(20) UNSIGNED NOT NULL,
+ `Action_Description` VARCHAR(200) NOT NULL,
+ `Start_Time` TIMESTAMP NOT NULL,
+ `Action_Status` INT NOT NULL,
+ `Status_Time` TIMESTAMP NOT NULL,
+ `Due_Time` TIMESTAMP NOT NULL,
+ PRIMARY KEY (`Action_ID`, `Request_ID`, `Assignee_ID`),
+ CONSTRAINT `fk_h_actiion_h_hoa_request`
+   FOREIGN KEY (`Request_ID`)
+   REFERENCES `".$Request_table_name."` (`Request_ID`)
+   ON DELETE NO ACTION
+   ON UPDATE NO ACTION,
+ CONSTRAINT `fk_h_actiion_h_users1`
+   FOREIGN KEY (`Assignee_ID`)
+   REFERENCES `".$User_table_name."` (`ID`)
+   ON DELETE NO ACTION
+   ON UPDATE NO ACTION,
+  INDEX Request_ID ( `Request_ID` ),
+  INDEX Assignee_ID ( `Assignee_ID` ))
+ENGINE = InnoDB;";
   
   
-  $sqlWork = "CREATE TABLE IF NOT EXISTS ".$Work_table_name."   (
-   `Work_User_ID` BIGINT(20) UNSIGNED NOT NULL,
-   `Action_ID` INT NOT NULL,
-   `Work_Description` VARCHAR(200) NOT NULL,
-   `Record_Time` TIMESTAMP NOT NULL,
-   PRIMARY KEY (`Work_User_ID`, `Action_ID`),
-   CONSTRAINT `fk_Work_h_action1`
-     FOREIGN KEY (`Action_ID`)
-     REFERENCES `HOA_ACTION` (`Action_ID`)
-     ON DELETE NO ACTION
-     ON UPDATE NO ACTION,
-   CONSTRAINT `fk_Work_h_users1`
-     FOREIGN KEY (`Work_User_ID`)
-     REFERENCES `h_users` (`ID`)
-     ON DELETE NO ACTION
-     ON UPDATE NO ACTION)";
+  $sqlWork = "CREATE TABLE IF NOT EXISTS ".$Work_table_name." (
+ `Work_User_ID` BIGINT(20) UNSIGNED NOT NULL,
+ `Action_ID` INT NOT NULL,
+ `Work_Description` VARCHAR(200) NOT NULL,
+ `Record_Time` TIMESTAMP NOT NULL,
+ PRIMARY KEY (`Work_User_ID`, `Action_ID`),
+ CONSTRAINT `fk_Work_h_action1`
+   FOREIGN KEY (`Action_ID`)
+   REFERENCES `".$Action_table_name."` (`Action_ID`)
+   ON DELETE NO ACTION
+   ON UPDATE NO ACTION,
+ CONSTRAINT `fk_Work_h_users1`
+   FOREIGN KEY (`Work_User_ID`)
+   REFERENCES `".$User_table_name."` (`ID`)
+   ON DELETE NO ACTION
+   ON UPDATE NO ACTION,
+  INDEX Action_ID ( `Action_ID` ),
+  INDEX Work_User_ID ( `Work_User_ID` )
+  )ENGINE = InnoDB;";
   require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
+  dbDelta( $sqlUser );
   dbDelta( $sqlRequest );
   dbDelta( $sqlAction );
   dbDelta( $sqlWork );
 }
 //set default option
 register_activation_hook(__FILE__,'init_db');
-
 //init database
 
 //deaction

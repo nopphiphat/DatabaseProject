@@ -4,6 +4,8 @@
 require_once ('../../../wp-config.php');
 //ini_set('display_errors', 'On');
 
+$date = new DateTime();
+$timestamp = $date->format('Y-m-d H:i:s');
 
 $hoa_form=$_POST["hoa_request_form"];
 
@@ -31,13 +33,11 @@ $value=array(
     'Request_Description'=>$hoa_description,
     'Request_Method'=>'Form',
     'Request_Users_ID'=>$hoa_use_id,
-    'Record_Employee_ID'=>225,
-    'Record_Time'=>'2019-04-01 00:00:00',
-    'Request_Handler_ID'=>300,
+    'Record_Employee_ID'=>0,
+    'Record_Time'=>$timestamp,
+    'Request_Handler_ID'=>0,
     'Request_Status'=>1,
-    'Status_Time'=>'2019-04-01 00:00:00',
-    'Due_Time'=>NULL,
-    'Request_Rating'=>NULL,
+    'Status_Time'=>$timestamp,
     'Rating_time'=>NULL
 );
 
@@ -61,7 +61,7 @@ $formats_values = array('%d',
 
 try{
     //$wpdb->query($my_sql);
-    $wpdb->insert('HOA_REQUEST',$value,$formats_values);
+    $wpdb->insert($wpdb->prefix.'HOA_REQUEST',$value,$formats_values);
     //$wpdb->insert('h_a',$value_test,$formats_test);
 }catch(Exception $e){
     echo $e->getMessage();

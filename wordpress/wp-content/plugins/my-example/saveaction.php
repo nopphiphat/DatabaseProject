@@ -55,7 +55,7 @@ $formats_values = array('%d',
 
 try{
     //$wpdb->query($my_sql);
-    $wpdb->insert('HOA_ACTION',$value,$formats_values);
+    $wpdb->insert($wpdb->prefix.'HOA_ACTION',$value,$formats_values);
     //$wpdb->insert('h_a',$value_test,$formats_test);
 }catch(Exception $e){
     echo $e->getMessage();
