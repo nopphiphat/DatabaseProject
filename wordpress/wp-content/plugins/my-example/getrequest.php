@@ -1,11 +1,12 @@
 <?php
-$user_id = $_GET["user_id"];
-
+require_once ('../../../wp-config.php');
+$user_id = $_POST["user_id"];
+//echo $user_id;
 $string_sql="SELECT * FROM HOA_REQUEST WHERE HOA_REQUEST.Request_Users_ID='$user_id'";
 
-$datas=$wpdb->query($string_sql);
+$datas=$wpdb->get_results($string_sql,OBJECT);
 
-echo $datas;
+echo json_encode($datas);
 
 
 

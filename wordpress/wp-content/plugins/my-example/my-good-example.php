@@ -270,154 +270,21 @@ class hoa_widget extends WP_Widget {
    //property_supervisor
 
    function hoa_property_employee(){
-      
+      $the_id=get_option('hoa_user_id') 
          ?>
-         <div id="hoa_insert_place"></div>
+      <div id="hoa_insert_place"></div>
          
-         <div id="hoa_add_request_page" class="ui longe modal">
-            <div class="content">
-         <form id="email_form" class="ui form">
-        <h4 class="ui dividing header">Hoa Request Form</h4>
-        <div class="field">
-          <label>Name</label>
-          <div class="two fields">
-            <div class="field">
-              <input id="hoa_c_first_name" type="text" name="hoa-first-name" placeholder="First Name">
-            </div>
-            <div class="field">
-              <input id="hoa_c_last_name" type="text" name="hoa-last-name" placeholder="Last Name">
-            </div>
-          </div>
-        </div>
-        
-        <div class="two fields">
-            <div class="field">
-              <label>Phone Number</label>
-              <div class="filed">
-                  <input id="hoa_c_phone_number" type="number" name="hoa-from-phone" placeholder="Your Phone Number">
-              </div>
-            </div>
-          <div class="field">
-            <label>Email Address</label>
-            <div class="filed">
-              <input id="hoa_c_email" type="text" name="hoa-from-email" placeholder="Your Email">
-            </div>
-          </div>
-        </div>
-
-        <div class="field">
-          <label>Address</label>
-          <div class="fields">
-            <div class="twelve wide field">
-              <input id="hoa_c_address" type="text" name="hoa-address" placeholder="Street Address">
-            </div>
-            <div class="four wide field">
-              <input id="hoa_c_apt" type="text" name="hoa-address-2" placeholder="Apt #">
-            </div>
-          </div>
-        </div>
-        <div class="two fields">
-          <div class="field">
-            <label>State</label>
-            <select id="hoa_c_state" class="ui fluid dropdown">
-              <option value="">State</option>
-          <option value="AL">Alabama</option>
-          <option value="AK">Alaska</option>
-          <option value="AZ">Arizona</option>
-          <option value="AR">Arkansas</option>
-          <option value="CA">California</option>
-          <option value="CO">Colorado</option>
-          <option value="CT">Connecticut</option>
-          <option value="DE">Delaware</option>
-          <option value="DC">District Of Columbia</option>
-          <option value="FL">Florida</option>
-          <option value="GA">Georgia</option>
-          <option value="HI">Hawaii</option>
-          <option value="ID">Idaho</option>
-          <option value="IL">Illinois</option>
-          <option value="IN">Indiana</option>
-          <option value="IA">Iowa</option>
-          <option value="KS">Kansas</option>
-          <option value="KY">Kentucky</option>
-          <option value="LA">Louisiana</option>
-          <option value="ME">Maine</option>
-          <option value="MD">Maryland</option>
-          <option value="MA">Massachusetts</option>
-          <option value="MI">Michigan</option>
-          <option value="MN">Minnesota</option>
-          <option value="MS">Mississippi</option>
-          <option value="MO">Missouri</option>
-          <option value="MT">Montana</option>
-          <option value="NE">Nebraska</option>
-          <option value="NV">Nevada</option>
-          <option value="NH">New Hampshire</option>
-          <option value="NJ">New Jersey</option>
-          <option value="NM">New Mexico</option>
-          <option value="NY">New York</option>
-          <option value="NC">North Carolina</option>
-          <option value="ND">North Dakota</option>
-          <option value="OH">Ohio</option>
-          <option value="OK">Oklahoma</option>
-          <option value="OR">Oregon</option>
-          <option value="PA">Pennsylvania</option>
-          <option value="RI">Rhode Island</option>
-          <option value="SC">South Carolina</option>
-          <option value="SD">South Dakota</option>
-          <option value="TN">Tennessee</option>
-          <option value="TX">Texas</option>
-          <option value="UT">Utah</option>
-          <option value="VT">Vermont</option>
-          <option value="VA">Virginia</option>
-          <option value="WA">Washington</option>
-          <option value="WV">West Virginia</option>
-          <option value="WI">Wisconsin</option>
-          <option value="WY">Wyoming</option>
-            </select>
-          </div>
-          
-          <div class="field">
-              <label>Country</label>
-              <input id="hoa_c_country" type="text" name="Country" placeholder="US">
-            </div>
-        </div>
-
-        <div class="field">
-            <label>Community</label>
-            <select id="hoa_c_community" class="ui fluid dropdown">
-              <option value="">Community_1</option>
-              <option value="AL">Community_2</option>
-              <option value="AK">Community_3</option>
-              <option value="AZ">Community_4</option>
-              <option value="AR">Other</option>
-            </select>
-        </div>
-
-            <div class="field">
-              <label>Email Content</label>
-              <textarea id="hoa_c_email_content"></textarea>
-            </div>
-      </form>
-      
-      
-      
-      </div>
-      <div class="actions">
-      <div class="ui positive right button" onclick=HOA_Send_Mail()>
-        Add Request
-      </div>
-      </div>
-         </div>
          
 
          <div class="three ui buttons" style="margin-bottom:30px">
-               <div class="ui animated button" tabindex="0" onclick=Hoa_add_request_button()>
+               <div class="ui animated button" tabindex="0" onclick=Hoa_add_request_button(<?php echo $the_id; ?>)>
                   <div class="hidden content">Add Request</div>
                   <div class="visible content">
                   <i class="wpforms icon"></i>
                </div>
                </div>
             
-               <div class="ui animated button" tabindex="0" onclick=Hoa_property_employee_box_button()>
+               <div class="ui animated button" tabindex="0" onclick=Hoa_property_employee_box_button(<?php echo $the_id; ?>)>
                   <div class="hidden content">Reuqest Box</div>
                   <div class="visible content">
                   <i class="box icon"></i>
@@ -529,7 +396,7 @@ class hoa_widget extends WP_Widget {
             </div>
             <div class="actions">
                <div class="ui positive right button">
-                  Confirm$the_id=get_option('hoa_user_id') 
+                  Confirm
                </div>
             </div>
             </div>
