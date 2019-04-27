@@ -1,4 +1,5 @@
 <?php
+include_once "Net/POP3.php";
 /*
  * Delete all the emails selected by given criteria.
  *
@@ -10,9 +11,11 @@
  *
  * return: deleted emails' numbers.
  */
-function delete_emails($mailbox, $user, $password, $emails, $selector)
+function delete_emails($host, $port, $user, $password, $emails, $selector)
 {
-	$inbox = imap_open($mailbox, $user, $password);
+	$pop3 =& new Net_POP3();
+	$pop3->connect($host, $port);
+	$pop3->login($user, $password);
 
 	$numbers = count($emails);
 	$emails_to_delete = Array();
@@ -27,12 +30,10 @@ function delete_emails($mailbox, $user, $password, $emails, $selector)
 
 	for($j = count($emails_to_delete) - 1; $j >= 0; $j--)
 	{
-		imap_delete($inbox, $emails_to_delete[$j]);
+		$pop3->deleteMsg($emails_to_delete[$j]);
 	}
 
-	imap_expunge($inbox);
-	imap_close($inbox);
-	
+	$pop3->disconnect();	
 	return $emails_to_delete;
 }
 ?>

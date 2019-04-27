@@ -1,4 +1,6 @@
 <?php
+include_once "Net/POP3.php";
+
 /*
  * Storing the information of an email.
  */
@@ -48,21 +50,28 @@ class Email
 /*
  * Receive all the emails in the inbox.
  *
- * $mailbox: String
+ * $host: String
+ * $port: String
  * $user: String
  * $password: String
+ * 
+ * example:
+ * $host='localhost'; $port='110';
+ * $user='richard'; $password='Alien3';
  *
  * return: An Array of Email Object
  */
-function receive_all_emails($mailbox, $user, $password)
+function receive_all_emails($host, $port, $user, $password)
 {
-	$inbox = imap_open($mailbox, $user, $password);
-	$numbers = imap_num_msg($inbox);
+	$pop3 =& new Net_POP3();
+	$pop3->connect($host, $port);
+	$pop3->login($user, $password);
+	$numbers = $pop3->getNumMsg();
 
 	$emails = array();
 	for ($i = 1; $i <= $numbers; $i++)
 	{
-	    $header = imap_fetchheader($inbox, $i);
+	    $header = $pop3->getRawHeaders($i);
 		$lines = get_lines($header);
 
 		$from = parse_from($lines);
@@ -70,12 +79,12 @@ function receive_all_emails($mailbox, $user, $password)
 		$subject = parse_subject($lines);
 		$date = parse_date($lines);
 
-		$body = base64_decode(imap_fetchbody($inbox, $i, 1)); // You may define other decoding ways here.
+		$body = $pop3->getBody($i); // You may define other decoding ways here.
 		$email = new Email($from, $to, $subject, $date, $body);
 	    array_push($emails, $email);
 	}
 
-	imap_close($inbox);
+	$pop3->disconnect();
 	return $emails;
 }
 
