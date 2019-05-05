@@ -44,7 +44,7 @@ public class EmailReceiverController {
         }
     }
 
-    public static Store connectEmail() throws Exception {
+    public static Store connectPOP3() throws Exception {
         /*
         Replace this part to change the POP3 settings
          */
@@ -61,7 +61,7 @@ public class EmailReceiverController {
     }
 
     public static ArrayList<Email> receive() throws Exception {
-        Store store = connectEmail();
+        Store store = connectPOP3();
         Folder folder = store.getFolder("INBOX");
 
         folder.open(Folder.READ_WRITE);
@@ -75,7 +75,7 @@ public class EmailReceiverController {
 
     public static void delete(int number) throws Exception {
         try {
-            Store store = connectEmail();
+            Store store = connectPOP3();
             Folder folder = store.getFolder("INBOX");
             folder.open(Folder.READ_WRITE);
 
